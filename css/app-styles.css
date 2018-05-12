@@ -1,0 +1,55 @@
+/* MAIN STYLES */
+
+.body {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+
+.nav {
+  grid-column: 1 / -1;
+  grid-row: 1 / 2;
+  background-color: #163A5F;
+}
+
+.aside {
+  grid-column: 1 / 3;
+  grid-row: 2 / 6;
+  background-color: #5FCC9C;
+}
+
+.main {
+  margin: 10px 0 0 0;
+  grid-column: 3 / -1;
+  grid-row: 2 / 6;
+  overflow: scroll;
+}
+
+.footer {
+  grid-column: 1 / -1;
+  grid-row: 6 / 7;
+  background-color: #163A5F;
+}
+
+body>* {
+  color: white;
+  text-align: center;
+}
+
+/* TABLE */
+
+.expense-category {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 1fr)
+}
+
+.fa-minus-square {
+  color: red;
+  grid-column: 12/13;
+}
+
+.remove-icon {
+  display: flex;
+  justify-content: space-between;
+}
