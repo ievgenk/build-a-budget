@@ -1,2 +1,9 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: AOIOqwSHvj+SCwv99vDbpEPy6Cn11LdWj8oM92OGuh35jnmQOi6EeckURDpkvsGBU846yVoISmGL5urRtxHMU++Ml8IdGjxFQNDUI4Gzh6WlWA9claiyp5PcDQGGHZ/d7W+49w+pBPQi5sMSEJGCCp/vJkSNoI/Q0Js90SXo40A54DuGvMFI0EJs9WBZDEvzd6kjKh6/IMN/aVLAJ6rIbRz34Df5m5xXFU34bLiRgXJm8wDaRoOOilxqli15sMXIkxjoJXUBYaIkppKFSXTJ2zr/bkm+SAdY8S5EtmvnL4sQDIuXeVUgVUZ7rqvGRB6KEsnhxnx8NPVNmHVLQpdOYXGbcWg/bz19MPYSlfCTbYrdycd7gmGaZo2T21pc/iVwXX6O3R8JTaXotbDjwrG9matSykcvho1eJFK5gRB37oOq9wkq82NZXqyoh0I4ThiytzIaE7bS7xaiXTbJkBW5UKE0VdL/MJLAdDr57QR64QPsoS0uY1n5uXByuRKV8SXEC1+wYYoz2pbrqi/UPbBtMIu3xyqS6MjdmpwM5XmD6TOqWgOPvHxUqwcOBkMR0TZiLkxt4k5s65Mqpu5d4M0MPaNsNCGf59vWUNU7bpVxoEbaZ6U/MUD5+vXh6IK7Le0G9WO8s3loqzL1blSwimvCp+I8o0Z1Vf5cANtE1hQ17E4=
+  app: guarded-eyrie-58633
+  on:
+    repo: ievgenk/build-a-budget
