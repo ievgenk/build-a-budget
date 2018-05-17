@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Build A Budget</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.css">
   <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
-  <link rel="stylesheet" href="./css/table.css">
   <link rel="stylesheet" href="./css/app-styles.css">
   <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
     crossorigin="anonymous"></script>
@@ -22,14 +22,13 @@
       <a href="#">Log Out</a>
     </div>
   </nav>
-  <div class="categories-bar">
-    <h2>Categories</h2>
-    <h2>Budgeted</h2>
-    <h2>Spent</h2>
-  </div>
   <main class="main">
-    </table>
-    <table class="ui orange table">
+    <div class="ui block header" id="categories-header">
+      <h2>Categories</h2>
+      <h2>Budgeted</h2>
+      <h2>Spent</h2>
+    </div>
+    <table class="ui striped table">
       <thead>
         <tr>
           <th>Bills
@@ -44,18 +43,30 @@
         <tr>
           <td>Bc hydro</td>
           <td>200</td>
-          <td>800</td>
+          <td class="remove-icon">800
+            <i class="far fa-minus-square"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>Shaw Cable</td>
+          <td>80</td>
+          <td class="remove-icon">0
+            <i class="far fa-minus-square"></i>
+          </td>
         </tr>
       </tbody>
     </table>
 
   </main>
   <footer class="footer">
-    <button class="aside-btn">Add Income to the Budget</button>
-    <button class="aside-btn">Add Transaction</button>
-    <button class="aside-btn">View all Transactions</button>
+    <button class="footer-btn income-btn">Add Income to the Budget</button>
+    <button class="footer-btn">Add a Category</button>
+    <button class="footer-btn">Add Transaction</button>
+    <button class="footer-btn">View all Transactions</button>
   </footer>
 
+  <script src="./js/bling.js"></script>
+  <script src="./js/index.js"></script>
 </body>
 
 </html>
