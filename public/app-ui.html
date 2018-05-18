@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Build A Budget</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.css">
-  <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+  <!-- <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css"> -->
   <link rel="stylesheet" href="./css/app-styles.css">
   <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
     crossorigin="anonymous"></script>
@@ -64,7 +64,24 @@
     <button class="footer-btn">Add Transaction</button>
     <button class="footer-btn">View all Transactions</button>
   </footer>
-
+  <div class="forms hidden">
+    <form class="add-transaction-form">
+      <span class="close-btn">
+        <i class="fas fa-times-circle"></i>
+      </span>
+      <label for="category">Category:</label>
+      <select name="category-selection" id="category">
+        <option value="Bills">Bills</option>
+      </select>
+      <label for="subcategory">Subcategory:</label>
+      <select name="subcategory-selection" id="subcategory">
+        <option value="Bc-Hydro">Bc Hydro</option>
+      </select>
+      <label for="dollar-value">Value:</label>
+      <input type="number" name="value" id="dollar-value">
+      <input type="submit" value="Send">
+    </form>
+  </div>
   <script src="./js/bling.js"></script>
   <script src="./js/index.js"></script>
 </body>
