@@ -4,29 +4,50 @@ const formsDiv = document.querySelector('.forms');
 const closeFormBtn = document.querySelector('.close-btn');
 const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
 const formCategoryDropDown = document.querySelector('#category');
-
+const formSubCategoryDropDown = document.querySelector('#subcategory');
+const addTransactionForm = document.querySelector('.add-transaction-form');
+const monthDisplay = document.querySelector('.month');
 
 // STATE
 const BUDGET = {
-  budget: 2400,
-  transactions: [{
-    category: 'Bills',
-    title: 'Shaw Internet',
-    budgeted: 80,
-    spent: 0
-  }],
-  categories: {
-    bills: ['Bc Hydro', 'Shaw'],
-    restaurants: [],
-    pet: []
+  month: {
+    may: {
+      budget: 2400,
+      transactions: [{
+        category: 'Bills',
+        title: 'Shaw Internet',
+        budgeted: 80,
+        spent: 0
+      }],
+      categories: {
+        bills: ['Bc Hydro', 'Shaw'],
+        restaurants: [],
+        pet: []
+      }
+    }
   }
+
 }
 
 // FUNCTIONS
+
+function retrieveCurrentMonth() {
+  return new Promise((resolve, reject) => {
+    let date = new Date();
+    let month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    resolve(month[date.getMonth()]);
+  })
+}
+
+async function setMonth() {
+  const currenMonth = await retrieveCurrentMonth();
+  monthDisplay.innerHTML = `<h2>${currenMonth}</h2>`;
+}
+
 function retrieveCategories() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const categories = Object.keys(BUDGET.categories);
+      const categories = Object.keys(BUDGET.month.may.categories);
       resolve(categories);
     }, 500)
   })
@@ -48,11 +69,10 @@ async function setCategories() {
 }
 
 
-
 function retrieveBudgetValue() {
   return new Promise((resolve, reject) => {
     setInterval(() => {
-      resolve(BUDGET.budget + '$');
+      resolve(BUDGET.month.may.budget + '$');
     }, 500)
   })
 }
@@ -78,6 +98,7 @@ closeFormBtn.on('click', function () {
 // DOM RENDERING
 
 function renderState() {
+  setMonth();
   setBudgetValue();
   setCategories();
 }

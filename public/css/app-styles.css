@@ -76,6 +76,12 @@ nav {
   align-items: center;
 }
 
+.fa-arrow-left,
+.fa-arrow-right {
+  font-size: 1.5rem;
+  margin: 10px 5px;
+}
+
 /* CATEGORIES BAR */
 
 #categories-header {
