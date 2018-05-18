@@ -13,10 +13,12 @@
     crossorigin="anonymous"></script>
 </head>
 
+<!-- TOP NAV -->
+
 <body class="body">
   <nav class="nav">
     <div class="money-budgeted">
-      <p>1327 $</p>
+      <p class="money-budgeted-value"></p>
     </div>
     <div class="links">
       <a href="#">Log Out</a>
@@ -28,6 +30,9 @@
       <h2>Budgeted</h2>
       <h2>Spent</h2>
     </div>
+
+    <!-- TABLE -->
+
     <table class="ui striped table">
       <thead>
         <tr>
@@ -56,14 +61,19 @@
         </tr>
       </tbody>
     </table>
-
   </main>
+
+  <!-- FOOTER NAV -->
+
   <footer class="footer">
     <button class="footer-btn income-btn">Add Income to the Budget</button>
     <button class="footer-btn">Add a Category</button>
     <button class="footer-btn">Add Transaction</button>
     <button class="footer-btn">View all Transactions</button>
   </footer>
+
+  <!-- POP-UP FORM -->
+
   <div class="forms hidden">
     <form class="add-transaction-form">
       <span class="close-btn">
@@ -71,7 +81,6 @@
       </span>
       <label for="category">Category:</label>
       <select name="category-selection" id="category">
-        <option value="Bills">Bills</option>
       </select>
       <label for="subcategory">Subcategory:</label>
       <select name="subcategory-selection" id="subcategory">
@@ -82,6 +91,9 @@
       <input type="submit" value="Send">
     </form>
   </div>
+
+  <!-- SCRIPTS -->
+
   <script src="./js/bling.js"></script>
   <script src="./js/index.js"></script>
 </body>
