@@ -166,3 +166,8 @@ footer {
   top: 8px;
   right: 10px;
 }
+
+.radio-btns {
+  display: flex;
+  flex-direction: column;
+}

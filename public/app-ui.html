@@ -22,10 +22,10 @@
     </div>
     <div class="date">
       <span class="month"></span>
-      <span>
+      <span class="left-arrow">
         <i class="fas fa-arrow-left"></i>
       </span>
-      <span>
+      <span class="right-arrow">
         <i class="fas fa-arrow-right"></i>
       </span>
 
@@ -76,9 +76,8 @@
   <!-- FOOTER NAV -->
 
   <footer class="footer">
-    <button class="footer-btn income-btn">Add Income to the Budget</button>
+    <button class="footer-btn income-btn">Input Transaction</button>
     <button class="footer-btn">Add a Category</button>
-    <button class="footer-btn">Add Transaction</button>
     <button class="footer-btn">View all Transactions</button>
   </footer>
 
@@ -95,9 +94,16 @@
       <label for="subcategory">Subcategory:</label>
       <select name="subcategory-selection" id="subcategory">
         <option value="Bc-Hydro">Bc Hydro</option>
+        <option value="Bc-Hydro">Pet Store</option>
       </select>
       <label for="dollar-value">Value:</label>
       <input type="number" name="value" id="dollar-value">
+      <div class="radio-btns">
+        <p>-</p>
+        <input type="radio" name="value" id="negative">
+        <p>+</p>
+        <input type="radio" name="value" id="positive">
+      </div>
       <input type="submit" value="Send">
     </form>
   </div>
