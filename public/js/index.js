@@ -26,7 +26,7 @@ const BUDGET = {
             spent: 0
           }],
           categories: {
-            dinning: [{
+            bills: [{
               title: 'Bc Hydro',
               budgeted: 0,
               spent: 0
@@ -57,8 +57,16 @@ const BUDGET = {
               budgeted: 0,
               spent: 0
             }],
-            restaurants: [],
-            pet: []
+            Dinning: [{
+              title: 'Starbucks',
+              budgeted: 0,
+              spent: 0
+            }],
+            pet: [{
+              title: 'Bosleys',
+              budgeted: 0,
+              spent: 0
+            }]
           }
         },
         6: {
@@ -169,6 +177,28 @@ async function setBudgetValue() {
   }
 }
 
+function retrieveSubCategory() {
+  let choseCategory = formCategoryDropDown.options[formCategoryDropDown.selectedIndex].textContent;
+  let subCategoryArr = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[choseCategory];
+  let subCategoryList = subCategoryArr.map(subCatergory => {
+    return subCatergory.title;
+  })
+  return subCategoryList;
+};
+
+
+
+function renderSubCategories() {
+  let subCategoryList = retrieveSubCategory();
+  formSubCategoryDropDown.innerHTML = '';
+  for (let subCategory of subCategoryList) {
+    let newOption = document.createElement('option');
+    newOption.setAttribute('value', subCategory);
+    let subCategoryText = document.createTextNode(subCategory);
+    newOption.appendChild(subCategoryText);
+    formSubCategoryDropDown.appendChild(newOption);
+  }
+}
 
 // EVENT LISTENERS
 
@@ -198,8 +228,8 @@ rightArrow.on('click', function (event) {
 })
 
 
-formSubCategoryDropDown.on('change', function (event) {
-  console.log(formSubCategoryDropDown.options[formSubCategoryDropDown.selectedIndex].textContent)
+formCategoryDropDown.on('click', function (event) {
+  renderSubCategories();
 })
 
 
