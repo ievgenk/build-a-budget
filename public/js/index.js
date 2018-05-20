@@ -9,6 +9,7 @@ const addTransactionForm = document.querySelector('.add-transaction-form');
 const monthDisplay = document.querySelector('.month');
 const leftArrow = document.querySelector('.left-arrow');
 const rightArrow = document.querySelector('.right-arrow');
+const mainTable = document.querySelector('.striped-table');
 
 // STATE
 const BUDGET = {
@@ -49,15 +50,23 @@ const BUDGET = {
           }],
           categories: {
             bills: [{
-              title: 'Bc Hydro',
-              budgeted: 0,
+              title: 'Freedom Mobile',
+              budgeted: 190,
               spent: 0
             }, {
+              title: 'Bc Hydro',
+              budgeted: 120,
+              spent: 60
+            }, {
               title: 'Shaw',
-              budgeted: 0,
-              spent: 0
+              budgeted: 88,
+              spent: 88
             }],
             Dinning: [{
+              title: 'Tim Hortons',
+              budgeted: 60,
+              spent: 23
+            }, {
               title: 'Starbucks',
               budgeted: 0,
               spent: 0
@@ -111,6 +120,41 @@ const STORE = {
 
 
 // FUNCTIONS
+
+function renderTable() {
+  let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
+  let tableHtml = ``;
+  for (let category in categories) {
+    let categoryHtml =
+      `<thead>
+    <tr>
+      <th>${category}
+      </th>
+      <th>Budgeted</th>
+      <th class="remove-icon">Spent
+        <i class="far fa-minus-square"></i>
+      </th>
+    </tr>
+  </thead>`;
+    let subcategoryHtml =
+      Object.values(categories[category]).map(subCategory => {
+        return `<tbody>
+        <tr>
+          <td>${subCategory.title}</td>
+          <td>${subCategory.budgeted}</td>
+          <td class="remove-icon">${subCategory.spent}
+            <i class="far fa-minus-square"></i>
+          </td>
+        </tr>
+        </tbody>`;
+      })
+    let categoryUnitHtml = categoryHtml + subcategoryHtml;
+    tableHtml += categoryUnitHtml;
+  }
+  mainTable.innerHTML = tableHtml;
+}
+
+
 
 function sortMonthsAscending() {
   let arrOfMonths = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth);
@@ -200,7 +244,7 @@ function renderSubCategories() {
   }
 }
 
-// EVENT LISTENERS
+// EVENT LISTENERS -- DOM RENDERING
 
 addIncomeBtn.on('click', function () {
   formsDiv.classList.toggle('hidden');
@@ -232,14 +276,11 @@ formCategoryDropDown.on('click', function (event) {
   renderSubCategories();
 })
 
-
-
-// DOM RENDERING
-
 function renderState() {
   setMonth();
   setBudgetValue();
   setCategories();
+  renderTable();
 }
 
 window.on('load', function (event) {
