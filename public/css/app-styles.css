@@ -139,7 +139,7 @@ footer {
   justify-content: center
 }
 
-.forms .add-transaction-form {
+.forms .all-forms {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -151,11 +151,11 @@ footer {
   border-radius: 5px;
 }
 
-.add-transaction-form {
+.all-forms {
   position: absolute;
 }
 
-.add-transaction-form>* {
+.all-forms>* {
   margin: 6px 0px;
 }
 

@@ -1,6 +1,6 @@
 //DOM
 const addIncomeBtn = document.querySelector('.income-btn');
-const formsDiv = document.querySelector('.forms');
+const addTransactionFormDiv = document.querySelector('.add-transaction-div');
 const closeFormBtn = document.querySelector('.close-btn');
 const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
 const formCategoryDropDown = document.querySelector('#category');
@@ -10,6 +10,9 @@ const monthDisplay = document.querySelector('.month');
 const leftArrow = document.querySelector('.left-arrow');
 const rightArrow = document.querySelector('.right-arrow');
 const mainTable = document.querySelector('.striped-table');
+const addCategoryBtn = document.querySelector('.add-category');
+const categoryFormDiv = document.querySelector('.add-category-div');
+const closeBtnCategoryForm = document.querySelector('#close-btn-category');
 
 // STATE
 const BUDGET = {
@@ -28,6 +31,10 @@ const BUDGET = {
           }],
           categories: {
             bills: [{
+              title: 'Pet Insurance',
+              budgeted: 45,
+              spent: 45
+            }, {
               title: 'Bc Hydro',
               budgeted: 0,
               spent: 0
@@ -247,11 +254,18 @@ function renderSubCategories() {
 // EVENT LISTENERS -- DOM RENDERING
 
 addIncomeBtn.on('click', function () {
-  formsDiv.classList.toggle('hidden');
+  addTransactionFormDiv.classList.toggle('hidden');
 })
 closeFormBtn.on('click', function () {
-  formsDiv.classList.toggle('hidden');
+  event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
+  console.log('clicked on close')
 })
+
+closeBtnCategoryForm.on('click', function () {
+  event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
+  console.log('clicked on close')
+})
+
 leftArrow.on('click', function (event) {
   let ascendingArrOfMonths = sortMonthsAscending();
   if (ascendingArrOfMonths[0] < BUDGET.selectedMonth) {
@@ -271,6 +285,11 @@ rightArrow.on('click', function (event) {
   renderState();
 })
 
+
+addCategoryBtn.on('click', function (event) {
+  categoryFormDiv.classList.toggle('hidden');
+  console.log('clicked')
+})
 
 formCategoryDropDown.on('click', function (event) {
   renderSubCategories();

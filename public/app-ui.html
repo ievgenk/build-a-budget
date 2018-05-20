@@ -52,14 +52,16 @@
 
   <footer class="footer">
     <button class="footer-btn income-btn">Input Transaction</button>
-    <button class="footer-btn">Add a Category</button>
+    <button class="footer-btn add-category">Add a Category</button>
     <button class="footer-btn">View all Transactions</button>
   </footer>
 
-  <!-- POP-UP FORM -->
+  <!-- POP-UP FORMS -->
 
-  <div class="forms hidden">
-    <form class="add-transaction-form">
+
+  <!-- ADD TRANSACTION FORM -->
+  <div class="forms add-transaction-div hidden">
+    <form class="add-transaction-form all-forms">
       <span class="close-btn">
         <i class="fas fa-times-circle"></i>
       </span>
@@ -78,6 +80,19 @@
         <input type="radio" name="value" id="positive">
       </div>
       <input type="submit" value="Send">
+    </form>
+  </div>
+
+  <!-- ADD CATEGORY FORM -->
+
+  <div class="forms add-category-div hidden">
+    <form class="all-forms category-form">
+      <span class="close-btn" id="close-btn-category">
+        <i class="fas fa-times-circle"></i>
+      </span>
+      <label for="category-name">Add Category: </label>
+      <input type="text" id="category-name">
+      <input type="submit" value="Submit">
     </form>
   </div>
 
