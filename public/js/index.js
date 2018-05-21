@@ -43,7 +43,9 @@ const BUDGET = {
           transactions: [{
             category: 'Bills',
             subCategory: 'Shaw Internet',
-            value: -45
+            value: 45,
+            positive: true,
+            negative: false
           }],
           categories: {
             bills: [{
@@ -68,7 +70,9 @@ const BUDGET = {
           transactions: [{
             category: 'Bills',
             subCategory: 'Shaw Internet',
-            value: -45
+            value: 45,
+            positive: true,
+            negative: false
           }],
           categories: {
             bills: [{
@@ -105,7 +109,9 @@ const BUDGET = {
           transactions: [{
             category: 'Bills',
             subCategory: 'Shaw Internet',
-            value: -45
+            value: 45,
+            positive: true,
+            negative: false
           }],
           categories: {
             bills: [{
@@ -265,6 +271,69 @@ function renderSubCategories() {
   }
 }
 
+function addCategory() {
+  let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
+
+  for (let category in categories) {
+    if (category != categoryNameInput.value) {
+      categories[categoryNameInput.value] = [];
+      alert('Succesfully added')
+      categoryNameInput.value = '';
+      break;
+    } else {
+      alert('This category already exists')
+    }
+  }
+}
+
+function addMoneyToBudget() {
+  BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
+  moneyValueInput.value = '';
+  alert('Money Succesfully were added to your budget');
+}
+
+function addATransaction() {
+  let newTransaction = {
+    category: formCategoryDropDown.value,
+    subCategory: formSubCategoryDropDown.value,
+    value: `${dollarValueInput.value}`
+  }
+  if (radioNegative.checked) {
+    newTransaction.positive = false,
+      newTransaction.negative = true
+  } else {
+    newTransaction.positive = true,
+      newTransaction.negative = false
+  }
+  BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions.push(newTransaction);
+  alert('Your Transaction has been sucesfully added')
+  return newTransaction;
+}
+
+function addingTransactionValueToState() {
+  let newTransaction = addATransaction();
+  let stateCategories = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories)
+
+  for (let category of stateCategories) {
+    if (newTransaction.category === category) {
+      let selectedCategory = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[category];
+
+      let selectedSubCategory = selectedCategory.filter(selectedCategory => selectedCategory.title === newTransaction.subCategory)
+
+      if (newTransaction.positive === true) {
+        BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += newTransaction.value;
+      } else if (newTransaction.negative === true) {
+        selectedSubCategory[0].spent = selectedSubCategory[0].budgeted - newTransaction.value;
+        selectedSubCategory[0].budgeted -= newTransaction.value;
+      }
+
+      console.log(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[category])
+      console.log(selectedSubCategory)
+    }
+  }
+
+}
+
 // EVENT LISTENERS -- DOM RENDERING
 
 addIncomeBtn.on('click', function () {
@@ -310,19 +379,7 @@ formCategoryDropDown.on('click', function (event) {
 
 categoryForm.on('submit', function (event) {
   event.preventDefault();
-  let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
-
-  for (let category in categories) {
-    if (category != categoryNameInput.value) {
-      categories[categoryNameInput.value] = [];
-      alert('Succesfully added')
-      categoryNameInput.value = '';
-      break;
-    } else {
-      alert('This category already exists')
-    }
-  }
-
+  addCategory();
   renderState();
 })
 
@@ -336,20 +393,14 @@ addMoneyBtn.on('click', function (event) {
 
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
-  BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
-  moneyValueInput.value = '';
-  alert('Money Succesfully were added to your budget');
+  addMoneyToBudget();
   renderState();
 })
 
 addTransactionForm.on('submit', function (event) {
   event.preventDefault();
-  let newTransaction = {
-    category: formCategoryDropDown.value,
-    subCategory: formSubCategoryDropDown.value,
-    value: `${dollarValueInput.value}`
-  }
-  console.log(newTransaction)
+  addingTransactionValueToState();
+  renderState();
 })
 
 
