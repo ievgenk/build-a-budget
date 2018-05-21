@@ -51,6 +51,7 @@
   <!-- FOOTER NAV -->
 
   <footer class="footer">
+    <button class="footer-btn add-money-btn">Add Money To Budget</button>
     <button class="footer-btn income-btn">Input Transaction</button>
     <button class="footer-btn add-category">Add a Category</button>
     <button class="footer-btn">View all Transactions</button>
@@ -95,6 +96,22 @@
       <input type="submit" value="Submit">
     </form>
   </div>
+
+
+  <!-- ADD MONEY TO BUDGET FORM -->
+
+
+  <div class="forms add-money-div hidden">
+    <form class="all-forms add-money-form">
+      <span class="close-btn" id="add-money-close-btn">
+        <i class="fas fa-times-circle"></i>
+      </span>
+      <label for="money-value">Add Money: </label>
+      <input type="number" id="money-value">
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
 
   <!-- SCRIPTS -->
 
