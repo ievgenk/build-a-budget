@@ -90,6 +90,19 @@ nav {
   text-align: center;
 }
 
+.edit-categories {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fa-edit {
+  font-size: 1.5rem;
+  margin-left: 10px;
+  margin-top: 12px;
+  color: #163A5F;
+}
+
 /* TABLE */
 
 .expense-category {
@@ -100,12 +113,25 @@ nav {
 .fa-minus-square {
   color: red;
   grid-column: 12/13;
+  font-size: 1.3rem;
 }
 
 .remove-icon {
   display: flex;
   justify-content: space-between;
   margin: 0;
+}
+
+.all-transactions-div {
+  grid-column: 1 / -1;
+  grid-row: 2 / 6;
+  overflow: scroll;
+}
+
+.fa-plus-square {
+  color: #5FCC9C;
+  font-size: 1.3rem;
+  margin-left: 5px;
 }
 
 /* Footer */

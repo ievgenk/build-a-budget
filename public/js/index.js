@@ -2,12 +2,12 @@
 const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
 const monthDisplay = document.querySelector('.month');
 const mainTable = document.querySelector('.striped-table');
-
+const mainDiv = document.querySelector('main');
 // DIVs
 const addTransactionFormDiv = document.querySelector('.add-transaction-div');
 const categoryFormDiv = document.querySelector('.add-category-div');
 const addMoneyDiv = document.querySelector('.add-money-div');
-
+const transactionListDiv = document.querySelector('.all-transactions-div');
 // BTNs
 const addIncomeBtn = document.querySelector('.income-btn');
 const closeFormBtn = document.querySelector('.close-btn');
@@ -18,12 +18,17 @@ const addMoneyBtn = document.querySelector('.add-money-btn');
 const addMoneyCloseBtn = document.querySelector('#add-money-close-btn');
 const radioNegative = document.querySelector('#negative');
 const radioPositive = document.querySelector('#positive');
+const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
+const editCategoriesBtn = document.querySelector('.edit-categories');
+
 
 // FORMS
+const transactionTable = document.querySelector('.transactions-table');
 const formCategoryDropDown = document.querySelector('#category');
 const formSubCategoryDropDown = document.querySelector('#subcategory');
 const dollarValueInput = document.querySelector('#dollar-value');
 const addTransactionForm = document.querySelector('.add-transaction-form');
+const briefDescriptionInput = document.querySelector('#description');
 const closeBtnCategoryForm = document.querySelector('#close-btn-category');
 const categoryForm = document.querySelector('.category-form');
 const categoryNameInput = document.querySelector('#category-name');
@@ -45,7 +50,8 @@ const BUDGET = {
             subCategory: 'Shaw Internet',
             value: 45,
             positive: true,
-            negative: false
+            negative: false,
+            description: ''
           }],
           categories: {
             bills: [{
@@ -72,7 +78,8 @@ const BUDGET = {
             subCategory: 'Shaw Internet',
             value: 45,
             positive: true,
-            negative: false
+            negative: false,
+            description: '',
           }],
           categories: {
             bills: [{
@@ -111,7 +118,8 @@ const BUDGET = {
             subCategory: 'Shaw Internet',
             value: 45,
             positive: true,
-            negative: false
+            negative: false,
+            description: ''
           }],
           categories: {
             bills: [{
@@ -155,11 +163,12 @@ function renderTable() {
     let categoryHtml =
       `<thead>
     <tr>
-      <th>${category}
+      <th class="add-subCategory-icon">${category}
+      <i class="far fa-plus-square add-subCategory-btn hidden"></i>
       </th>
       <th>Budgeted</th>
       <th class="remove-icon">Spent
-        <i class="far fa-minus-square"></i>
+        <i class="far fa-minus-square hidden"></i>
       </th>
     </tr>
   </thead>`;
@@ -170,7 +179,7 @@ function renderTable() {
           <td>${subCategory.title}</td>
           <td>${subCategory.budgeted}</td>
           <td class="remove-icon">${subCategory.spent}
-            <i class="far fa-minus-square"></i>
+            <i class="far fa-minus-square hidden"></i>
           </td>
         </tr>
         </tbody>`;
@@ -305,7 +314,10 @@ function addATransaction() {
     newTransaction.positive = true,
       newTransaction.negative = false
   }
+  newTransaction.description = briefDescriptionInput.value;
   BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions.push(newTransaction);
+  briefDescriptionInput.value = '';
+  dollarValueInput.value = '';
   alert('Your Transaction has been sucesfully added')
   return newTransaction;
 }
@@ -321,17 +333,46 @@ function addingTransactionValueToState() {
       let selectedSubCategory = selectedCategory.filter(selectedCategory => selectedCategory.title === newTransaction.subCategory)
 
       if (newTransaction.positive === true) {
-        BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += newTransaction.value;
+        BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(newTransaction.value);
       } else if (newTransaction.negative === true) {
-        selectedSubCategory[0].spent = selectedSubCategory[0].budgeted - newTransaction.value;
+        selectedSubCategory[0].spent -= (newTransaction.value * -1);
         selectedSubCategory[0].budgeted -= newTransaction.value;
       }
 
-      console.log(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[category])
-      console.log(selectedSubCategory)
     }
   }
+}
 
+function displayAllTransactions() {
+  const transactionArr = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions;
+  let transactionsHTML = '';
+
+  for (let transaction of transactionArr) {
+    let transactionProperties = Object.keys(transaction);
+    transactionsHTML +=
+      `<thead>
+    <tr>
+      <th>${transactionProperties[0]}
+      </th>
+      <th>${transactionProperties[1]}</th>
+      <th>
+      ${transactionProperties[2]}
+      </th>
+      <th>
+      ${transactionProperties[5]}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr>
+          <td>${transaction.category}</td>
+          <td>${transaction.subCategory}</td>
+          <td>${transaction.value}</td>
+          <td>${transaction.description}</td>
+        </tr>
+        </tbody>`;
+  }
+  transactionTable.innerHTML = transactionsHTML;
 }
 
 // EVENT LISTENERS -- DOM RENDERING
@@ -387,6 +428,17 @@ addMoneyCloseBtn.on('click', function (event) {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 })
 
+viewAllTransactionsBtn.on('click', function (event) {
+  mainDiv.classList.toggle('hidden');
+  if (mainDiv.classList.contains('hidden')) {
+    event.currentTarget.textContent = 'Back To Budget';
+  } else {
+    event.currentTarget.textContent = 'View All Transactions';
+  }
+  displayAllTransactions();
+  transactionListDiv.classList.toggle('hidden');
+})
+
 addMoneyBtn.on('click', function (event) {
   addMoneyDiv.classList.toggle('hidden');
 })
@@ -403,12 +455,23 @@ addTransactionForm.on('submit', function (event) {
   renderState();
 })
 
+editCategoriesBtn.on('click', function (event) {
+  const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
+  const deleteCategoryBtns = document.querySelectorAll('.fa-minus-square');
+  for (let i = 0; i < deleteCategoryBtns.length; i++) {
+    deleteCategoryBtns[i].classList.toggle('hidden');
+  }
+  for (let i = 0; i < addSubCategoryBtns.length; i++) {
+    addSubCategoryBtns[i].classList.toggle('hidden');
+  }
+})
 
 function renderState() {
   setMonth();
   setBudgetValue();
   setCategories();
   renderTable();
+  displayAllTransactions();
 }
 
 window.on('load', function (event) {
