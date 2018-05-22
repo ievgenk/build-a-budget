@@ -1,41 +1,3 @@
-//DOM
-const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
-const monthDisplay = document.querySelector('.month');
-const mainTable = document.querySelector('.striped-table');
-const mainDiv = document.querySelector('main');
-// DIVs
-const addTransactionFormDiv = document.querySelector('.add-transaction-div');
-const categoryFormDiv = document.querySelector('.add-category-div');
-const addMoneyDiv = document.querySelector('.add-money-div');
-const transactionListDiv = document.querySelector('.all-transactions-div');
-// BTNs
-const addIncomeBtn = document.querySelector('.income-btn');
-const closeFormBtn = document.querySelector('.close-btn');
-const leftArrow = document.querySelector('.left-arrow');
-const rightArrow = document.querySelector('.right-arrow');
-const addCategoryBtn = document.querySelector('.add-category');
-const addMoneyBtn = document.querySelector('.add-money-btn');
-const addMoneyCloseBtn = document.querySelector('#add-money-close-btn');
-const radioNegative = document.querySelector('#negative');
-const radioPositive = document.querySelector('#positive');
-const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
-const editCategoriesBtn = document.querySelector('.edit-categories');
-
-
-// FORMS
-const transactionTable = document.querySelector('.transactions-table');
-const formCategoryDropDown = document.querySelector('#category');
-const formSubCategoryDropDown = document.querySelector('#subcategory');
-const dollarValueInput = document.querySelector('#dollar-value');
-const addTransactionForm = document.querySelector('.add-transaction-form');
-const briefDescriptionInput = document.querySelector('#description');
-const closeBtnCategoryForm = document.querySelector('#close-btn-category');
-const categoryForm = document.querySelector('.category-form');
-const categoryNameInput = document.querySelector('#category-name');
-const addMoneyForm = document.querySelector('.add-money-form');
-const moneyValueInput = document.querySelector('#money-value');
-
-
 // STATE
 const BUDGET = {
   selectedYear: 2018,
@@ -156,6 +118,8 @@ const STORE = {
 
 // FUNCTIONS
 
+//RENDER MAIN BUDGET TABLE
+
 function renderTable() {
   let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
   let tableHtml = ``;
@@ -198,6 +162,9 @@ function sortMonthsAscending() {
   return ascendingArrOfMonths;
 }
 
+
+// GET CALL TO RETRIEVE ALL DATA
+
 function retrieveBudgetData() {
   return new Promise((resolve, reject) => {
     //AXIOS request
@@ -209,11 +176,15 @@ function retrieveBudgetData() {
   })
 }
 
+// SET CURRENT MONTH
+
 function setMonth() {
   let month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const currenMonth = month[BUDGET.selectedMonth - 1];
   monthDisplay.innerHTML = `<h2>${currenMonth}</h2>`;
 }
+
+// RETRIEVE CATEGORIES
 
 function retrieveCategories() {
   return new Promise((resolve, reject) => {
@@ -223,6 +194,8 @@ function retrieveCategories() {
     }, 500)
   })
 }
+
+//SET CATEGORIES
 
 async function setCategories() {
   try {
@@ -240,6 +213,7 @@ async function setCategories() {
   }
 }
 
+//RETRIEVE BUDGET VALUE
 
 function retrieveBudgetValue() {
   return new Promise((resolve, reject) => {
@@ -249,6 +223,8 @@ function retrieveBudgetValue() {
   })
 }
 
+//SET BUDGET VALUE
+
 async function setBudgetValue() {
   try {
     budgetedMoneyValue.textContent = await retrieveBudgetValue();
@@ -256,6 +232,8 @@ async function setBudgetValue() {
     console.error(err)
   }
 }
+
+// RETRIEVE SUBCATEGORIES
 
 function retrieveSubCategory() {
   let choseCategory = formCategoryDropDown.options[formCategoryDropDown.selectedIndex].textContent;
@@ -266,7 +244,7 @@ function retrieveSubCategory() {
   return subCategoryList;
 };
 
-
+// SET SUBCATEGORIES
 
 function renderSubCategories() {
   let subCategoryList = retrieveSubCategory();
@@ -279,6 +257,8 @@ function renderSubCategories() {
     formSubCategoryDropDown.appendChild(newOption);
   }
 }
+
+//ADD A NEW CATEGORY
 
 function addCategory() {
   let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
@@ -295,11 +275,15 @@ function addCategory() {
   }
 }
 
+//ADD MONEY TO BUDGET
+
 function addMoneyToBudget() {
   BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
   moneyValueInput.value = '';
   alert('Money Succesfully were added to your budget');
 }
+
+//ADD TRANSACTION
 
 function addATransaction() {
   let newTransaction = {
@@ -322,6 +306,8 @@ function addATransaction() {
   return newTransaction;
 }
 
+//SAVE TRANSACTION TO THE STATE OBJECT
+
 function addingTransactionValueToState() {
   let newTransaction = addATransaction();
   let stateCategories = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories)
@@ -342,6 +328,8 @@ function addingTransactionValueToState() {
     }
   }
 }
+
+//DISPLAY ALL TRANSACTIONS
 
 function displayAllTransactions() {
   const transactionArr = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions;
@@ -375,20 +363,44 @@ function displayAllTransactions() {
   transactionTable.innerHTML = transactionsHTML;
 }
 
+// ADDING EVENT LISTENERS ON ADD SUBCATEGORY BUTTONS
+
+function addListenersOnSubcategoryButtons() {
+  let btnArr = document.querySelectorAll('.add-subCategory-icon')
+  for (let i = 0; i < btnArr.length; i++) {
+    btnArr[i].on('click', function (event) {
+      let category = event.currentTarget.textContent.trim();
+
+      console.log(event.currentTarget.textContent.trim());
+    })
+  }
+}
+
 // EVENT LISTENERS -- DOM RENDERING
+
+
+
+//ADD INCOME BTN
 
 addIncomeBtn.on('click', function () {
   addTransactionFormDiv.classList.toggle('hidden');
 })
+
+// CLOSE FORM BTN
+
 closeFormBtn.on('click', function () {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 
 })
 
+// CLOSE FORM BTN
+
 closeBtnCategoryForm.on('click', function () {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 
 })
+
+// LEFT ARROW BTN
 
 leftArrow.on('click', function (event) {
   let ascendingArrOfMonths = sortMonthsAscending();
@@ -399,6 +411,9 @@ leftArrow.on('click', function (event) {
   }
   renderState();
 })
+
+// RIGHT ARROW BTN
+
 rightArrow.on('click', function (event) {
   let ascendingArrOfMonths = sortMonthsAscending();
   if (ascendingArrOfMonths[ascendingArrOfMonths.length - 1] > BUDGET.selectedMonth) {
@@ -410,13 +425,19 @@ rightArrow.on('click', function (event) {
 })
 
 
+//ADD CATEGORY BTN
+
 addCategoryBtn.on('click', function (event) {
   categoryFormDiv.classList.toggle('hidden');
 })
 
+//CATEGORY FORM CATEGORY DROPDOWN
+
 formCategoryDropDown.on('click', function (event) {
   renderSubCategories();
 })
+
+//CATEGORY FORM
 
 categoryForm.on('submit', function (event) {
   event.preventDefault();
@@ -424,9 +445,13 @@ categoryForm.on('submit', function (event) {
   renderState();
 })
 
+//CLOSE BTN
+
 addMoneyCloseBtn.on('click', function (event) {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 })
+
+//VIEW ALL TRANSACTION BTN
 
 viewAllTransactionsBtn.on('click', function (event) {
   mainDiv.classList.toggle('hidden');
@@ -439,9 +464,13 @@ viewAllTransactionsBtn.on('click', function (event) {
   transactionListDiv.classList.toggle('hidden');
 })
 
+//ADD MONEY BTN
+
 addMoneyBtn.on('click', function (event) {
   addMoneyDiv.classList.toggle('hidden');
 })
+
+//ADD MONEY FORM
 
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
@@ -449,11 +478,15 @@ addMoneyForm.on('submit', function (event) {
   renderState();
 })
 
+//ADD TRANSACTION FORM
+
 addTransactionForm.on('submit', function (event) {
   event.preventDefault();
   addingTransactionValueToState();
   renderState();
 })
+
+//EDIT CATEGORIES BTN
 
 editCategoriesBtn.on('click', function (event) {
   const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
@@ -466,12 +499,15 @@ editCategoriesBtn.on('click', function (event) {
   }
 })
 
+// RENDER STATE
+
 function renderState() {
   setMonth();
   setBudgetValue();
   setCategories();
   renderTable();
   displayAllTransactions();
+  addListenersOnSubcategoryButtons();
 }
 
 window.on('load', function (event) {
