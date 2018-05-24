@@ -169,14 +169,7 @@ function sortMonthsAscending() {
 // GET CALL TO RETRIEVE ALL DATA
 
 function retrieveBudgetData() {
-  return new Promise((resolve, reject) => {
-    //AXIOS request
-    setTimeout(() => {
-      STORE.budgets.byYear[STORE.selectedYear].byMonth[STORE.selectedMonth] = { //DATA/}
-      }
-      resolve();
-    }, 500)
-  })
+  return axios.ge
 }
 
 // SET CURRENT MONTH
