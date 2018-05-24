@@ -1,12 +1,22 @@
 // Modules
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const config = require('./config');
 const mongoose = require('mongoose');
 const {
-  Budget,
-  Year
+  User,
+  MonthlyBudget,
+  Transaction,
+  Category,
+  Subcategory
 } = require('./models/budget');
+const autopopulate = require('mongoose-autopopulate');
+
+//ROUTES
+
+const categoryRoute = require('./routes/category-route');
+const budgetRoute = require('./routes/budget-route');
 
 // DataBase Connection
 mongoose.connect('mongodb://localhost:27017/BuildABudget')
@@ -21,54 +31,17 @@ mongoose.connect('mongodb://localhost:27017/BuildABudget')
 
 // Middleware
 app.use(express.static('public'));
+app.use(cors());
+app.use('/api/categories', categoryRoute);
+app.use('/api/budget', budgetRoute)
+
 
 // Server Funcationality
 
-app.get('/budget', (req, res) => {
-  Budget.findOne({
-      selectedYear: 2018,
-      selectedMonth: 5,
-    })
-    .populate('byYear')
-    .then(result => res.send(result))
-
-  // new Year({
-  //     year: 2018
-  //   }).save()
-  //   .then(year =>
-  //     new Budget({
-  //       selectedYear: 2018,
-  //       selectedMonth: 5,
-  //       byYear: [year._id]
-  //     }).save())
-  //   .then(result => res.send(result))
 
 
-
-
-  //     byMonth: {
-  //       month: 5,
-  //       budget: 2300,
-  //       transactions: {
-  //         category: 'Bills',
-  //         subCategory: 'Freedom Mobile',
-  //         value: '120',
-  //         positive: false,
-  //         negative: true,
-  //         description: 'Monthly cell phone bill'
-  //       },
-  //       categories: {
-  //         name: 'Bills',
-  //         listOfSubCategories: [{
-  //           title: 'Freedom Mobile',
-  //           budgeted: 190,
-  //           spent: 120
-  //         }]
-  //       }
-  //     }
-  //   }
-  // })
-
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json(err).end();
 })
 
 app.listen(config.port, () => {

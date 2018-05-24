@@ -1,3 +1,5 @@
+const serverURL = 'http://127.0.0.1:8080'
+
 // STATE
 const BUDGET = {
   selectedYear: 2018,
@@ -107,11 +109,12 @@ const BUDGET = {
 const STORE = {
   selectedYear: 2018,
   selectedMonth: 5,
-  budgets: {
-    byYear: {
-
-    }
-  }
+  categories: [],
+  inputTransactionForm: {
+    selectedCategory: '',
+    selectedSubCategory: ''
+  },
+  budget: 0
 }
 
 
@@ -184,27 +187,20 @@ function setMonth() {
   monthDisplay.innerHTML = `<h2>${currenMonth}</h2>`;
 }
 
-// RETRIEVE CATEGORIES
 
-function retrieveCategories() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const categories = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories);
-      resolve(categories);
-    }, 500)
-  })
-}
 
 //SET CATEGORIES
 
-async function setCategories() {
+function renderCategories() {
   try {
-    const categories = await retrieveCategories();
+
+
+    const categories = STORE.categories;
     formCategoryDropDown.innerHTML = '';
     for (let category of categories) {
       let newOption = document.createElement('option');
-      newOption.setAttribute('value', category);
-      let categoryText = document.createTextNode(category);
+      newOption.setAttribute('value', category.name);
+      let categoryText = document.createTextNode(category.name);
       newOption.appendChild(categoryText);
       formCategoryDropDown.appendChild(newOption);
     }
@@ -247,7 +243,8 @@ function retrieveSubCategory() {
 // SET SUBCATEGORIES
 
 function renderSubCategories() {
-  let subCategoryList = retrieveSubCategory();
+  const category = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory);
+  const subCategoryList = category.listOfSubCategories;
   formSubCategoryDropDown.innerHTML = '';
   for (let subCategory of subCategoryList) {
     let newOption = document.createElement('option');
@@ -258,29 +255,37 @@ function renderSubCategories() {
   }
 }
 
+//
+
+// RETRIEVE CATEGORIES
+
+function retrieveCategories() {
+  return axios.get(serverURL + '/api/categories').then(categories => {
+    STORE.categories = categories.data
+  })
+}
+
 //ADD A NEW CATEGORY
 
 function addCategory() {
-  let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
-
-  for (let category in categories) {
-    if (category != categoryNameInput.value) {
-      categories[categoryNameInput.value] = [];
-      alert('Succesfully added')
-      categoryNameInput.value = '';
-      break;
-    } else {
-      alert('This category already exists')
+  return axios({
+    url: `${serverURL}/api/categories`,
+    method: 'post',
+    data: {
+      categoryName: categoryNameInput.value
     }
-  }
+  })
 }
 
 //ADD MONEY TO BUDGET
 
 function addMoneyToBudget() {
-  BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
-  moneyValueInput.value = '';
-  alert('Money Succesfully were added to your budget');
+  return new Promise((resolve, reject) => {
+    BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
+    moneyValueInput.value = '';
+    alert('Money Succesfully were added to your budget');
+    resolve();
+  })
 }
 
 //ADD TRANSACTION
@@ -433,16 +438,32 @@ addCategoryBtn.on('click', function (event) {
 
 //CATEGORY FORM CATEGORY DROPDOWN
 
-formCategoryDropDown.on('click', function (event) {
+formCategoryDropDown.on('change', function (event) {
+  STORE.inputTransactionForm.selectedCategory = event.currentTarget.value;
   renderSubCategories();
+})
+
+// CATEGORY FORM SUBCATEGORY DROPDOWN
+
+formSubCategoryDropDown.on('change', function (event) {
+  STORE.inputTransactionForm.selectedSubCategory = event.currentTarget.value;
 })
 
 //CATEGORY FORM
 
 categoryForm.on('submit', function (event) {
   event.preventDefault();
-  addCategory();
-  renderState();
+  addCategory().then(response => {
+      if (response.status === 200) {
+        alert('Category added to DB succesfully')
+      }
+      console.log(response)
+    })
+    .then(retrieveCategories)
+    .then(renderState)
+    .catch(err => {
+      alert('Category already exists')
+    })
 })
 
 //CLOSE BTN
@@ -474,14 +495,15 @@ addMoneyBtn.on('click', function (event) {
 
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
-  addMoneyToBudget();
-  renderState();
+  addMoneyToBudget()
+    .then(renderState);
 })
 
 //ADD TRANSACTION FORM
 
 addTransactionForm.on('submit', function (event) {
   event.preventDefault();
+
   addingTransactionValueToState();
   renderState();
 })
@@ -504,12 +526,13 @@ editCategoriesBtn.on('click', function (event) {
 function renderState() {
   setMonth();
   setBudgetValue();
-  setCategories();
+  renderCategories();
   renderTable();
   displayAllTransactions();
   addListenersOnSubcategoryButtons();
 }
 
 window.on('load', function (event) {
-  renderState();
+  retrieveCategories()
+    .then(renderState);
 })

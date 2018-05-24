@@ -1,110 +1,130 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const Schema = mongoose.Schema;
+const autopopulate = require('mongoose-autopopulate');
+
+const userSchema = new Schema({
+  userName: {
+    type: String,
+    min: 5,
+    max: 20
+  }
+})
+
+let User = mongoose.model('User', userSchema);
+
+const subcategorySchema = new Schema({
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
+    autopopulate: true
+  },
+  title: {
+    type: String,
+    required: true,
+    min: 3,
+    max: 25
+  },
+  budgeted: Number,
+  spent: Number
+})
 
 
-// const subcategorySchema = new Schema({
-//   title: {
-//     type: String,
-//     required: true,
-//     min: 3,
-//     max: 25
-//   },
-//   budgeted: Number,
-//   spent: Number
-// })
-
-// let Subcategory = mongoose.model('Subcatregory', subcategorySchema)
-
-// const categoriesSchema = new Schema({
-//   name: {
-//     type: String
-//   },
-//   listOfSubCategories: [{
-//     type: Schema.Types.ObjectId,
-//     ref: 'Subcatregory'
-//   }]
-// })
-
-// let Category = mongoose.model('Category', categoriesSchema);
-
-// const transactionSchema = new Schema({
-//   category: {
-//     type: String,
-//     required: true,
-//     min: 3,
-//     max: 25
-//   },
-//   subCategory: {
-//     type: String,
-//     required: true,
-//     min: 3,
-//     max: 45
-//   },
-//   value: {
-//     type: Number,
-//     required: true
-//   },
-//   positive: Boolean,
-//   negative: Boolean,
-//   description: String
-// })
-
-// let Transaction = mongoose.model('Transaction', transactionSchema);
-
-// const monthSchema = new Schema({
-//   month: {
-//     type: Number,
-//     required: true
-//   },
-//   budget: {
-//     type: Number,
-//     required: true
-//   },
-//   transactions: [{
-//     type: Schema.Types.ObjectId,
-//     ref: 'Transaction'
-//   }],
-//   categories: [{
-//     type: Schema.Types.ObjectId,
-//     ref: 'Category'
-//   }]
-// })
+let Subcategory = mongoose.model('Subcategory', subcategorySchema)
 
 
-// let Month = mongoose.model('Month', monthSchema);
+const categoriesSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: true
+  },
+  name: {
+    type: String
+  },
+  listOfSubCategories: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Subcategory',
+    autopopulate: true
+  }]
+}).plugin(autopopulate)
 
-const yearSchema = new Schema({
+categoriesSchema.index({
+  user: 1,
+  name: 1
+}, {
+  unique: true
+})
+
+let Category = mongoose.model('Category', categoriesSchema);
+
+const transactionSchema = new Schema({
+  subCategory: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subcategory',
+    autopopulate: true
+  },
+  value: {
+    type: Number,
+    required: true
+  },
+  positive: Boolean,
+  negative: Boolean,
+  description: String,
+  monthlyBudget: {
+    type: Schema.Types.ObjectId,
+    ref: 'MonthlyBudget',
+    autopopulate: true
+  }
+})
+
+
+
+let Transaction = mongoose.model('Transaction', transactionSchema);
+
+const monthlyBudgetSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: true
+  },
   year: {
     type: Number,
     required: true
-  }
-  // byMonth: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Month'
-  // }]
-})
-
-let Year = mongoose.model('Year', yearSchema);
-
-const budgetSchema = new Schema({
-  selectedYear: {
-    type: Number,
-    default: moment().year()
   },
-  selectedMonth: {
+  month: {
     type: Number,
-    default: moment().month()
+    required: true
   },
-  byYear: [{
+  budget: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  transactions: [{
     type: Schema.Types.ObjectId,
-    ref: 'Year'
+    ref: 'Transaction',
+    autopopulate: true
+  }],
+  allTransactionsCategories: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
+    autopopulate: true
   }]
-})
+}).plugin(autopopulate)
 
-let Budget = mongoose.model('Budget', budgetSchema);
+
+let MonthlyBudget = mongoose.model('MonthlyBudget', monthlyBudgetSchema);
+
+
+
+
+
 
 module.exports = {
-  Budget,
-  Year
+  User,
+  MonthlyBudget,
+  Transaction,
+  Category,
+  Subcategory
 }
