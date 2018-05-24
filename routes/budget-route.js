@@ -31,7 +31,24 @@ router.get('/:year/:month', (req, res) => {
     .then(budget => {
       res.status(200).json(budget);
     })
+})
 
+router.put('/:year/:month', (req, res) => {
+
+  MonthlyBudget.findOneAndUpdate({
+      year: parseInt(req.params.year),
+      month: parseInt(req.params.month)
+    }, {
+      budget: req.body.budget
+    }, {
+      new: true
+    })
+    .then(updatedBudget => {
+      res.status(200).json(updatedBudget);
+    })
+    .catch(err => {
+      console.log(err)
+    })
 })
 
 module.exports = router;

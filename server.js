@@ -30,6 +30,7 @@ mongoose.connect('mongodb://localhost:27017/BuildABudget')
 
 
 // Middleware
+
 app.use(express.static('public'));
 app.use(cors());
 app.use('/api/categories', categoryRoute);

@@ -109,6 +109,7 @@ const BUDGET = {
 const STORE = {
   selectedYear: 2018,
   selectedMonth: 5,
+  allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   categories: [],
   inputTransactionForm: {
     selectedCategory: '',
@@ -158,30 +159,6 @@ function renderTable() {
 }
 
 
-
-function sortMonthsAscending() {
-  let arrOfMonths = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth);
-  let ascendingArrOfMonths = arrOfMonths.sort()
-  return ascendingArrOfMonths;
-}
-
-
-// GET CALL TO RETRIEVE ALL DATA
-
-function retrieveBudgetData() {
-  return axios.ge
-}
-
-// SET CURRENT MONTH
-
-function setMonth() {
-  let month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const currenMonth = month[BUDGET.selectedMonth - 1];
-  monthDisplay.innerHTML = `<h2>${currenMonth}</h2>`;
-}
-
-
-
 //SET CATEGORIES
 
 function renderCategories() {
@@ -202,25 +179,35 @@ function renderCategories() {
   }
 }
 
-//RETRIEVE BUDGET VALUE
+// GET CALL TO RETRIEVE CURRENT YEAR AND MONTH BUDGET
 
 function retrieveBudgetValue() {
-  return new Promise((resolve, reject) => {
-    setInterval(() => {
-      resolve(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget + '$');
-    }, 500)
+  return axios.get(`${serverURL}/api/budget/${STORE.selectedYear}/${STORE.selectedMonth}`)
+    .then(budgetData => STORE.budget = budgetData.data.budget)
+}
+
+function displayCurrentMonth() {
+  monthDisplay.innerHTML = `<h2>${STORE.allMonths[STORE.selectedMonth - 1]}</h2>`
+}
+
+function displayBudgetValue() {
+  budgetedMoneyValue.innerHTML = `${STORE.budget}$`
+}
+
+
+//ADD MONEY TO BUDGET
+
+function addMoneyToBudget() {
+  STORE.budget += parseInt(moneyValueInput.value);
+  return axios({
+    url: `${serverURL}/api/budget/${STORE.selectedYear}/${STORE.selectedMonth}`,
+    method: 'put',
+    data: {
+      budget: STORE.budget
+    }
   })
 }
 
-//SET BUDGET VALUE
-
-async function setBudgetValue() {
-  try {
-    budgetedMoneyValue.textContent = await retrieveBudgetValue();
-  } catch (err) {
-    console.error(err)
-  }
-}
 
 // RETRIEVE SUBCATEGORIES
 
@@ -267,17 +254,6 @@ function addCategory() {
     data: {
       categoryName: categoryNameInput.value
     }
-  })
-}
-
-//ADD MONEY TO BUDGET
-
-function addMoneyToBudget() {
-  return new Promise((resolve, reject) => {
-    BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(moneyValueInput.value);
-    moneyValueInput.value = '';
-    alert('Money Succesfully were added to your budget');
-    resolve();
   })
 }
 
@@ -401,25 +377,26 @@ closeBtnCategoryForm.on('click', function () {
 // LEFT ARROW BTN
 
 leftArrow.on('click', function (event) {
-  let ascendingArrOfMonths = sortMonthsAscending();
-  if (ascendingArrOfMonths[0] < BUDGET.selectedMonth) {
-    BUDGET.selectedMonth--;
+  if (STORE.selectedMonth > 1) {
+    STORE.selectedMonth--;
+    retrieveBudgetValue()
+      .then(renderState);
   } else {
     return;
   }
-  renderState();
 })
 
 // RIGHT ARROW BTN
 
-rightArrow.on('click', function (event) {
-  let ascendingArrOfMonths = sortMonthsAscending();
-  if (ascendingArrOfMonths[ascendingArrOfMonths.length - 1] > BUDGET.selectedMonth) {
-    BUDGET.selectedMonth++;
+rightArrow.on('click', function (event) {;
+  if (STORE.selectedMonth < STORE.allMonths.length) {
+    STORE.selectedMonth++;
+    retrieveBudgetValue()
+      .then(renderState);
   } else {
     return;
   }
-  renderState();
+
 })
 
 
@@ -489,7 +466,8 @@ addMoneyBtn.on('click', function (event) {
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
   addMoneyToBudget()
-    .then(renderState);
+    .then(renderState).then(alert('Succesfully added money to budget'));
+
 })
 
 //ADD TRANSACTION FORM
@@ -517,8 +495,9 @@ editCategoriesBtn.on('click', function (event) {
 // RENDER STATE
 
 function renderState() {
-  setMonth();
-  setBudgetValue();
+  retrieveBudgetValue();
+  displayBudgetValue();
+  displayCurrentMonth();
   renderCategories();
   renderTable();
   displayAllTransactions();
@@ -527,5 +506,7 @@ function renderState() {
 
 window.on('load', function (event) {
   retrieveCategories()
+    .then(retrieveBudgetValue)
+    .then(displayBudgetValue)
     .then(renderState);
 })
