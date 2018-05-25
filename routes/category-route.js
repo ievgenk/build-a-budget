@@ -36,4 +36,17 @@ router.post('/', (req, res) => {
     })
 })
 
+
+router.delete('/:id', (req, res) => {
+  Category.findOneAndRemove({
+      _id: req.params.id
+    })
+    .then(result => {
+      res.status(202).end();
+    })
+    .catch(err => {
+      console.log(err)
+    })
+})
+
 module.exports = router;

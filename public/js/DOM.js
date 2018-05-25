@@ -22,7 +22,7 @@ const radioNegative = document.querySelector('#negative');
 const radioPositive = document.querySelector('#positive');
 const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
 const editCategoriesBtn = document.querySelector('.edit-categories');
-const tableRemoveIcon = document.querySelectorAll('.remove-icon');
+
 
 // FORMS
 const transactionTable = document.querySelector('.transactions-table');

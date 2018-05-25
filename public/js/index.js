@@ -111,7 +111,8 @@ const STORE = {
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   categories: [],
-  subCategoryToAdd: '',
+  CategoryToAdd: '',
+  CategoryToDelete: '',
   subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
@@ -131,7 +132,7 @@ function renderTable() {
   let tableHtml = ``;
   mainTable.innerHTML = '';
 
-  let categoryHTML = categoriesArr.map(categoryObj => {
+  categoriesArr.forEach(categoryObj => {
     let categoryHtml =
       `<thead>
   <tr>
@@ -144,28 +145,26 @@ function renderTable() {
     </th>
   </tr>
 </thead>`;
+
+    let subcategoryHtml = categoryObj.listOfSubCategories.map(subcategory => {
+      return `<tbody>
+  <tr>
+    <td>${subcategory.title}</td>
+    <td>${subcategory.budgeted}</td>
+    <td class="remove-icon">${subcategory.spent}
+      <i class="far fa-minus-square hidden"></i>
+    </td>
+  </tr>
+  </tbody>`;
+
+    }).join('');
+
     mainTable.innerHTML += categoryHtml;
+    mainTable.innerHTML += subcategoryHtml;
+
   })
-  // for (let category in categories) {
-
-  //   //   let subcategoryHtml =
-  //   //     Object.values(categories[category]).map(subCategory => {
-  //   //       return `<tbody>
-  //   //       <tr>
-  //   //         <td>${subCategory.title}</td>
-  //   //         <td>${subCategory.budgeted}</td>
-  //   //         <td class="remove-icon">${subCategory.spent}
-  //   //           <i class="far fa-minus-square hidden"></i>
-  //   //         </td>
-  //   //       </tr>
-  //   //       </tbody>`;
-  //   //     })
-  //   //   let categoryUnitHtml = categoryHtml + subcategoryHtml;
-  //   //   tableHtml += categoryUnitHtml;
-  //   // }
-
-  // }
 }
+
 
 
 //SET CATEGORIES
@@ -183,6 +182,7 @@ function renderCategories() {
       newOption.appendChild(categoryText);
       formCategoryDropDown.appendChild(newOption);
     }
+    formCategoryDropDown.value = STORE.inputTransactionForm.selectedCategory;
   } catch (err) {
     console.error(err);
   }
@@ -218,17 +218,6 @@ function addMoneyToBudget() {
 }
 
 
-// RETRIEVE SUBCATEGORIES
-
-function retrieveSubCategory() {
-  let choseCategory = formCategoryDropDown.options[formCategoryDropDown.selectedIndex].textContent;
-  let subCategoryArr = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[choseCategory];
-  let subCategoryList = subCategoryArr.map(subCatergory => {
-    return subCatergory.title;
-  })
-  return subCategoryList;
-};
-
 // SET SUBCATEGORIES
 
 function renderSubCategories() {
@@ -237,11 +226,12 @@ function renderSubCategories() {
   formSubCategoryDropDown.innerHTML = '';
   for (let subCategory of subCategoryList) {
     let newOption = document.createElement('option');
-    newOption.setAttribute('value', subCategory);
-    let subCategoryText = document.createTextNode(subCategory);
+    newOption.setAttribute('value', subCategory.title);
+    let subCategoryText = document.createTextNode(subCategory.title);
     newOption.appendChild(subCategoryText);
     formSubCategoryDropDown.appendChild(newOption);
   }
+  formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
 }
 
 //
@@ -251,6 +241,8 @@ function renderSubCategories() {
 function retrieveCategories() {
   return axios.get(serverURL + '/api/categories').then(categories => {
     STORE.categories = categories.data
+    STORE.inputTransactionForm.selectedCategory = STORE.categories[0].name;
+    STORE.inputTransactionForm.selectedSubCategory = STORE.categories[0].listOfSubCategories[0].title;
   })
 }
 
@@ -352,7 +344,7 @@ function saveSubCategoryToDB() {
   STORE.subCategoryToBeAdded = addSubCategoryInput.value;
 
   let categoryId = STORE.categories.find(category => {
-    return category.name === STORE.subCategoryToAdd;
+    return category.name === STORE.CategoryToAdd;
   })
   return axios({
     url: `${serverURL}/api/subcategories`,
@@ -364,6 +356,20 @@ function saveSubCategoryToDB() {
   })
 }
 
+// DELETING CATEGORIES FROM DB
+
+function deleteCategory() {
+  let categoryToDelete = STORE.CategoryToDelete;
+  let matchingCategory = STORE.categories.find(category => {
+    return category.name === categoryToDelete;
+  })
+  let categoryId = matchingCategory._id;
+
+  return axios({
+    url: `${serverURL}/api/categories/${categoryId}`,
+    method: 'delete'
+  })
+}
 
 
 // ADDING EVENT LISTENERS ON ADD SUBCATEGORY BUTTONS
@@ -372,7 +378,7 @@ function addListenersOnSubcategoryButtons() {
   let btnArr = document.querySelectorAll('.add-subCategory-icon')
   for (let i = 0; i < btnArr.length; i++) {
     btnArr[i].on('click', function (event) {
-      STORE.subCategoryToAdd = event.currentTarget.parentNode.firstElementChild.getAttribute("data-subcategory");
+      STORE.CategoryToAdd = event.currentTarget.parentNode.firstElementChild.getAttribute("data-subcategory");
       addSubcategoryDiv.classList.toggle('hidden');
     })
   }
@@ -392,11 +398,8 @@ function addListenersOnSubcategoryButtons() {
 addSubcategoryForm.on('submit', function (event) {
   event.preventDefault();
   saveSubCategoryToDB()
-    .then(subCategory => {
-      alert('Succesfully added new subcategory');
-      console.log(subCategory)
-      retrieveCategories();
-    })
+    .then(retrieveCategories)
+    .then(renderState)
 })
 
 
@@ -462,6 +465,9 @@ addCategoryBtn.on('click', function (event) {
 
 formCategoryDropDown.on('change', function (event) {
   STORE.inputTransactionForm.selectedCategory = event.currentTarget.value;
+  STORE.inputTransactionForm.selectedSubCategory = STORE.categories.find(category =>
+    category.name === event.currentTarget.value
+  ).listOfSubCategories[0].title
   renderSubCategories();
 })
 
@@ -469,6 +475,7 @@ formCategoryDropDown.on('change', function (event) {
 
 formSubCategoryDropDown.on('change', function (event) {
   STORE.inputTransactionForm.selectedSubCategory = event.currentTarget.value;
+
 })
 
 //CATEGORY FORM
@@ -548,7 +555,10 @@ editCategoriesBtn.on('click', function (event) {
 
   for (icon of tableRemoveIcons) {
     icon.on('click', function (event) {
-      console.log('remove icon clicked')
+      STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
+      deleteCategory()
+        .then(retrieveCategories)
+        .then(renderState)
     })
   }
 
@@ -564,6 +574,7 @@ function renderState() {
   renderTable();
   displayAllTransactions();
   addListenersOnSubcategoryButtons();
+  renderSubCategories();
 }
 
 window.on('load', function (event) {
