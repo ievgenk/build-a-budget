@@ -134,6 +134,11 @@ nav {
   margin-left: 5px;
 }
 
+.th-delete {
+  display: flex;
+  justify-content: space-between
+}
+
 /* Footer */
 
 footer {

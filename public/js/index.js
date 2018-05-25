@@ -111,6 +111,8 @@ const STORE = {
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   categories: [],
+  subCategoryToAdd: '',
+  subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
     selectedSubCategory: ''
@@ -125,37 +127,44 @@ const STORE = {
 //RENDER MAIN BUDGET TABLE
 
 function renderTable() {
-  let categories = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories;
+  let categoriesArr = STORE.categories;
   let tableHtml = ``;
-  for (let category in categories) {
+  mainTable.innerHTML = '';
+
+  let categoryHTML = categoriesArr.map(categoryObj => {
     let categoryHtml =
       `<thead>
-    <tr>
-      <th class="add-subCategory-icon">${category}
-      <i class="far fa-plus-square add-subCategory-btn hidden"></i>
-      </th>
-      <th>Budgeted</th>
-      <th class="remove-icon">Spent
-        <i class="far fa-minus-square hidden"></i>
-      </th>
-    </tr>
-  </thead>`;
-    let subcategoryHtml =
-      Object.values(categories[category]).map(subCategory => {
-        return `<tbody>
-        <tr>
-          <td>${subCategory.title}</td>
-          <td>${subCategory.budgeted}</td>
-          <td class="remove-icon">${subCategory.spent}
-            <i class="far fa-minus-square hidden"></i>
-          </td>
-        </tr>
-        </tbody>`;
-      })
-    let categoryUnitHtml = categoryHtml + subcategoryHtml;
-    tableHtml += categoryUnitHtml;
-  }
-  mainTable.innerHTML = tableHtml;
+  <tr>
+    <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">${categoryObj.name}
+    <i class="far fa-plus-square add-subCategory-btn hidden"></i>
+    </th>
+    <th>Budgeted</th>
+    <th class="th-delete">Spent
+    <span class="remove-icon"> <i class="far fa-minus-square hidden"></i></span>
+    </th>
+  </tr>
+</thead>`;
+    mainTable.innerHTML += categoryHtml;
+  })
+  // for (let category in categories) {
+
+  //   //   let subcategoryHtml =
+  //   //     Object.values(categories[category]).map(subCategory => {
+  //   //       return `<tbody>
+  //   //       <tr>
+  //   //         <td>${subCategory.title}</td>
+  //   //         <td>${subCategory.budgeted}</td>
+  //   //         <td class="remove-icon">${subCategory.spent}
+  //   //           <i class="far fa-minus-square hidden"></i>
+  //   //         </td>
+  //   //       </tr>
+  //   //       </tbody>`;
+  //   //     })
+  //   //   let categoryUnitHtml = categoryHtml + subcategoryHtml;
+  //   //   tableHtml += categoryUnitHtml;
+  //   // }
+
+  // }
 }
 
 
@@ -337,27 +346,70 @@ function displayAllTransactions() {
   transactionTable.innerHTML = transactionsHTML;
 }
 
+// ADDING SUBCATEGORIES TO DB
+
+function saveSubCategoryToDB() {
+  STORE.subCategoryToBeAdded = addSubCategoryInput.value;
+
+  let categoryId = STORE.categories.find(category => {
+    return category.name === STORE.subCategoryToAdd;
+  })
+  return axios({
+    url: `${serverURL}/api/subcategories`,
+    method: 'post',
+    data: {
+      category: categoryId._id,
+      title: STORE.subCategoryToBeAdded
+    }
+  })
+}
+
+
+
 // ADDING EVENT LISTENERS ON ADD SUBCATEGORY BUTTONS
 
 function addListenersOnSubcategoryButtons() {
   let btnArr = document.querySelectorAll('.add-subCategory-icon')
   for (let i = 0; i < btnArr.length; i++) {
     btnArr[i].on('click', function (event) {
-      let category = event.currentTarget.textContent.trim();
-
-      console.log(event.currentTarget.textContent.trim());
+      STORE.subCategoryToAdd = event.currentTarget.parentNode.firstElementChild.getAttribute("data-subcategory");
+      addSubcategoryDiv.classList.toggle('hidden');
     })
   }
 }
 
+
+
+// ADDING EVENT LISTENERS TO TABLE REMOVE ICONS
+
+
+
 // EVENT LISTENERS -- DOM RENDERING
 
+
+//ADD SUBCATEGORY FORM
+
+addSubcategoryForm.on('submit', function (event) {
+  event.preventDefault();
+  saveSubCategoryToDB()
+    .then(subCategory => {
+      alert('Succesfully added new subcategory');
+      console.log(subCategory)
+      retrieveCategories();
+    })
+})
 
 
 //ADD INCOME BTN
 
 addIncomeBtn.on('click', function () {
   addTransactionFormDiv.classList.toggle('hidden');
+})
+
+// CLOSE FORM BTN
+
+addSubcategoryCloseBtn.on('click', function () {
+  event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 })
 
 // CLOSE FORM BTN
@@ -484,12 +536,22 @@ addTransactionForm.on('submit', function (event) {
 editCategoriesBtn.on('click', function (event) {
   const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
   const deleteCategoryBtns = document.querySelectorAll('.fa-minus-square');
+  const tableRemoveIcons = document.querySelectorAll('.remove-icon');
+
+
   for (let i = 0; i < deleteCategoryBtns.length; i++) {
     deleteCategoryBtns[i].classList.toggle('hidden');
   }
   for (let i = 0; i < addSubCategoryBtns.length; i++) {
     addSubCategoryBtns[i].classList.toggle('hidden');
   }
+
+  for (icon of tableRemoveIcons) {
+    icon.on('click', function (event) {
+      console.log('remove icon clicked')
+    })
+  }
+
 })
 
 // RENDER STATE

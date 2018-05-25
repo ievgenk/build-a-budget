@@ -17,6 +17,9 @@ router.get('/', (req, res) => {
     .then(categories => {
       res.status(200).json(categories);
     })
+    .catch(err => {
+      console.log(err)
+    })
 });
 
 router.post('/', (req, res) => {

@@ -25,9 +25,16 @@ const subcategorySchema = new Schema({
     min: 3,
     max: 25
   },
-  budgeted: Number,
-  spent: Number
-})
+  budgeted: {
+    type: Number,
+    default: 0
+  },
+  spent: {
+    type: Number,
+    default: 0
+  }
+}).plugin(autopopulate)
+
 
 
 let Subcategory = mongoose.model('Subcategory', subcategorySchema)
@@ -76,7 +83,7 @@ const transactionSchema = new Schema({
     ref: 'MonthlyBudget',
     autopopulate: true
   }
-})
+}).plugin(autopopulate)
 
 
 

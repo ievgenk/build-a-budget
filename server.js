@@ -17,6 +17,7 @@ const autopopulate = require('mongoose-autopopulate');
 
 const categoryRoute = require('./routes/category-route');
 const budgetRoute = require('./routes/budget-route');
+const subCategoryRoute = require('./routes/subCategory-route');
 
 // DataBase Connection
 mongoose.connect('mongodb://localhost:27017/BuildABudget')
@@ -24,7 +25,7 @@ mongoose.connect('mongodb://localhost:27017/BuildABudget')
     console.log('Connected to DB sucesfully');
   })
   .catch((err) => {
-    console.err(err);
+    console.error(err);
   })
 
 
@@ -34,7 +35,8 @@ mongoose.connect('mongodb://localhost:27017/BuildABudget')
 app.use(express.static('public'));
 app.use(cors());
 app.use('/api/categories', categoryRoute);
-app.use('/api/budget', budgetRoute)
+app.use('/api/budget', budgetRoute);
+app.use('/api/subcategories', subCategoryRoute);
 
 
 // Server Funcationality
