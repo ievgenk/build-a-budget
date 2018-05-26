@@ -113,6 +113,7 @@ const STORE = {
   categories: [],
   CategoryToAdd: '',
   CategoryToDelete: '',
+  SubCategoryToDelete: '',
   subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
@@ -151,8 +152,11 @@ function renderTable() {
   <tr>
     <td>${subcategory.title}</td>
     <td>${subcategory.budgeted}</td>
-    <td class="remove-icon">${subcategory.spent}
-      <i class="far fa-minus-square hidden"></i>
+    <td class="remove-subcategory-td">
+    ${subcategory.spent}
+    <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}">
+    <i class="far fa-minus-square hidden"></i>
+    </span>
     </td>
   </tr>
   </tbody>`;
@@ -371,6 +375,16 @@ function deleteCategory() {
   })
 }
 
+// DELETING SUBCATEGORY FROM DB
+
+function deleteSubCategory() {
+  let subCategoryToDelete = STORE.SubCategoryToDelete;
+  return axios({
+    url: `${serverURL}/api/subcategories/${subCategoryToDelete}`,
+    method: 'delete'
+  })
+}
+
 
 // ADDING EVENT LISTENERS ON ADD SUBCATEGORY BUTTONS
 
@@ -383,10 +397,6 @@ function addListenersOnSubcategoryButtons() {
     })
   }
 }
-
-
-
-// ADDING EVENT LISTENERS TO TABLE REMOVE ICONS
 
 
 
@@ -544,6 +554,7 @@ editCategoriesBtn.on('click', function (event) {
   const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
   const deleteCategoryBtns = document.querySelectorAll('.fa-minus-square');
   const tableRemoveIcons = document.querySelectorAll('.remove-icon');
+  const subCategoryTableRemoveIcons = document.querySelectorAll('.remove-icon-subcategory');
 
 
   for (let i = 0; i < deleteCategoryBtns.length; i++) {
@@ -553,10 +564,19 @@ editCategoriesBtn.on('click', function (event) {
     addSubCategoryBtns[i].classList.toggle('hidden');
   }
 
-  for (icon of tableRemoveIcons) {
+  for (let icon of tableRemoveIcons) {
     icon.on('click', function (event) {
       STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
       deleteCategory()
+        .then(retrieveCategories)
+        .then(renderState)
+    })
+  }
+
+  for (let subCatIcon of subCategoryTableRemoveIcons) {
+    subCatIcon.on('click', function (event) {
+      STORE.SubCategoryToDelete = event.currentTarget.getAttribute("data-subcategory");
+      deleteSubCategory()
         .then(retrieveCategories)
         .then(renderState)
     })

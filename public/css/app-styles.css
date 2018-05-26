@@ -122,6 +122,11 @@ nav {
   margin: 0;
 }
 
+.remove-subcategory-td {
+  display: flex;
+  justify-content: space-between;
+}
+
 .all-transactions-div {
   grid-column: 1 / -1;
   grid-row: 2 / 6;
