@@ -18,6 +18,7 @@ const autopopulate = require('mongoose-autopopulate');
 const categoryRoute = require('./routes/category-route');
 const budgetRoute = require('./routes/budget-route');
 const subCategoryRoute = require('./routes/subCategory-route');
+const transactionsRoute = require('./routes/transactions-route');
 
 // DataBase Connection
 mongoose.connect('mongodb://localhost:27017/BuildABudget')
@@ -37,6 +38,7 @@ app.use(cors());
 app.use('/api/categories', categoryRoute);
 app.use('/api/budget', budgetRoute);
 app.use('/api/subcategories', subCategoryRoute);
+app.use('/api/transactions', transactionsRoute);
 
 
 // Server Funcationality

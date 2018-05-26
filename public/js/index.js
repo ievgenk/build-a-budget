@@ -117,7 +117,8 @@ const STORE = {
   subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
-    selectedSubCategory: ''
+    selectedSubCategory: '',
+    selectedSubCategoryId: ''
   },
   budget: 0
 }
@@ -262,51 +263,23 @@ function addCategory() {
   })
 }
 
-//ADD TRANSACTION
+//ADD TRANSACTION TO DB
 
 function addATransaction() {
-  let newTransaction = {
-    category: formCategoryDropDown.value,
-    subCategory: formSubCategoryDropDown.value,
-    value: `${dollarValueInput.value}`
-  }
-  if (radioNegative.checked) {
-    newTransaction.positive = false,
-      newTransaction.negative = true
-  } else {
-    newTransaction.positive = true,
-      newTransaction.negative = false
-  }
-  newTransaction.description = briefDescriptionInput.value;
-  BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions.push(newTransaction);
-  briefDescriptionInput.value = '';
-  dollarValueInput.value = '';
-  alert('Your Transaction has been sucesfully added')
-  return newTransaction;
-}
+  let selectedCat = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory)
 
-//SAVE TRANSACTION TO THE STATE OBJECT
+  let selectSubCat = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id
 
-function addingTransactionValueToState() {
-  let newTransaction = addATransaction();
-  let stateCategories = Object.keys(BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories)
-
-  for (let category of stateCategories) {
-    if (newTransaction.category === category) {
-      let selectedCategory = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].categories[category];
-
-      let selectedSubCategory = selectedCategory.filter(selectedCategory => selectedCategory.title === newTransaction.subCategory)
-
-      if (newTransaction.positive === true) {
-        BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].budget += parseInt(newTransaction.value);
-      } else if (newTransaction.negative === true) {
-        selectedSubCategory[0].spent -= (newTransaction.value * -1);
-        selectedSubCategory[0].budgeted -= newTransaction.value;
-      }
+  return axios({
+    url: `${serverURL}/api/transactions`,
+    method: 'post',
+    data: {
+      subCategory: STORE.inputTransactionForm.selectedSubCategory,
 
     }
-  }
+  })
 }
+
 
 //DISPLAY ALL TRANSACTIONS
 
@@ -475,9 +448,14 @@ addCategoryBtn.on('click', function (event) {
 
 formCategoryDropDown.on('change', function (event) {
   STORE.inputTransactionForm.selectedCategory = event.currentTarget.value;
-  STORE.inputTransactionForm.selectedSubCategory = STORE.categories.find(category =>
+  let selectedSubCategory = STORE.inputTransactionForm.selectedSubCategory;
+  selectedSubCategory = STORE.categories.find(category =>
     category.name === event.currentTarget.value
-  ).listOfSubCategories[0].title
+  );
+  if (selectedSubCategory.listOfSubCategories.length > 0) {
+    selectedSubCategory = selectedSubCategory.listOfSubCategories[0].title
+  }
+  STORE.inputTransactionForm.selectedSubCategory = selectedSubCategory;
   renderSubCategories();
 })
 
@@ -543,9 +521,8 @@ addMoneyForm.on('submit', function (event) {
 
 addTransactionForm.on('submit', function (event) {
   event.preventDefault();
+  return
 
-  addingTransactionValueToState();
-  renderState();
 })
 
 //EDIT CATEGORIES BTN
@@ -591,10 +568,11 @@ function renderState() {
   displayBudgetValue();
   displayCurrentMonth();
   renderCategories();
+  renderSubCategories();
   renderTable();
   displayAllTransactions();
   addListenersOnSubcategoryButtons();
-  renderSubCategories();
+
 }
 
 window.on('load', function (event) {
