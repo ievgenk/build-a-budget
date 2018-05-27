@@ -117,8 +117,7 @@ const STORE = {
   subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
-    selectedSubCategory: '',
-    selectedSubCategoryId: ''
+    selectedSubCategory: ''
   },
   budget: 0
 }
@@ -268,13 +267,19 @@ function addCategory() {
 function addATransaction() {
   let selectedCat = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory)
 
-  let selectSubCat = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id
+  let selectSubCatId = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id
+
+  let booleanValue;
+
+
+
 
   return axios({
     url: `${serverURL}/api/transactions`,
     method: 'post',
     data: {
-      subCategory: STORE.inputTransactionForm.selectedSubCategory,
+      subCategory: selectSubCatId,
+      value: dollarValueInput.value,
 
     }
   })
