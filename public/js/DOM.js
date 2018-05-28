@@ -9,6 +9,8 @@ const categoryFormDiv = document.querySelector('.add-category-div');
 const addMoneyDiv = document.querySelector('.add-money-div');
 const transactionListDiv = document.querySelector('.all-transactions-div');
 const addSubcategoryDiv = document.querySelector('.add-subCategory-div');
+const moneyBudgetedDiv = document.querySelector('.money-budgeted');
+const moneyBudgetFormDiv = document.querySelector('.budget-money-form-div');
 // BTNs
 const addIncomeBtn = document.querySelector('.income-btn');
 const closeFormBtn = document.querySelector('.close-btn');
@@ -22,6 +24,7 @@ const radioNegative = document.querySelector('#negative');
 const radioPositive = document.querySelector('#positive');
 const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
 const editCategoriesBtn = document.querySelector('.edit-categories');
+const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
 
 
 // FORMS
@@ -38,3 +41,4 @@ const addMoneyForm = document.querySelector('.add-money-form');
 const moneyValueInput = document.querySelector('#money-value');
 const addSubcategoryForm = document.querySelector('.add-subCategory-form');
 const addSubCategoryInput = document.querySelector('#subCategory-title');
+const subCategoryBudgeFormDrop = document.querySelector('#subcategory-budget-money-dropdown');

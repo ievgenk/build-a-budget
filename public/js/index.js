@@ -110,6 +110,7 @@ const STORE = {
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   monthlyBudgetData: '',
+  allSubcategories: [],
   categories: [],
   transactions: [],
   CategoryToAdd: '',
@@ -177,6 +178,16 @@ function setCurrentMonthToStore() {
   STORE.selectedMonth = moment().month()
 }
 
+// ADDING ALL SUBCATEGORIES TO THE STORE
+
+function addAllSubcategoriesToStore() {
+  STORE.categories.forEach(category => {
+    for (let subCategory of category.listOfSubCategories) {
+      STORE.allSubcategories.push(subCategory)
+    }
+  })
+}
+
 // RETRIEVE MONTHLY BUDGET DATA
 
 function retrieveMontlyBudgetData() {
@@ -236,7 +247,7 @@ function addMoneyToBudget() {
 }
 
 
-// SET SUBCATEGORIES
+// RENDER SUBCATEGORIES TO INPUT TRANSACTION FORM
 
 function renderSubCategories() {
   const category = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory);
@@ -252,7 +263,18 @@ function renderSubCategories() {
   formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
 }
 
-//
+// RENDER SUBCATEGORIES TO BUDGET MONEY FORM
+
+function renderSubCategoriesBudgetForm() {
+  subCategoryBudgeFormDrop.innerHTML = '';
+  for (let subCategory of STORE.allSubcategories) {
+    let newOption = document.createElement('option');
+    newOption.setAttribute('value', subCategory.title);
+    let subCategoryText = document.createTextNode(subCategory.title);
+    newOption.appendChild(subCategoryText);
+    subCategoryBudgeFormDrop.appendChild(newOption);
+  }
+}
 
 // RETRIEVE CATEGORIES
 
@@ -396,6 +418,19 @@ function addListenersOnSubcategoryButtons() {
 // EVENT LISTENERS -- DOM RENDERING
 
 
+// MONEY BUDGETING DIV
+
+moneyBudgetedDiv.on('click', function (event) {
+  moneyBudgetFormDiv.classList.toggle('hidden');
+})
+
+
+// MONEY BUDGET DIV CLOSE BTN
+
+closeBtnBudgetMoney.on('click', function (event) {
+  event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
+})
+
 //ADD SUBCATEGORY FORM
 
 addSubcategoryForm.on('submit', function (event) {
@@ -441,6 +476,7 @@ leftArrow.on('click', function (event) {
     STORE.inputTransactionForm.selectedSubCategory = '';
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
+    STORE.allSubcategories = [];
     renderState();
   } else {
     return;
@@ -455,6 +491,7 @@ rightArrow.on('click', function (event) {;
     STORE.inputTransactionForm.selectedSubCategory = '';
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
+    STORE.allSubcategories = [];
     renderState();
   } else {
     return;
@@ -593,6 +630,8 @@ function renderState() {
     .then(renderTable)
     .then(addListenersOnSubcategoryButtons)
     .then(renderCategories)
+    .then(addAllSubcategoriesToStore)
+    .then(renderSubCategoriesBudgetForm)
   //renderTable();
   //displayAllTransactions();
   //addListenersOnSubcategoryButtons();
@@ -600,8 +639,6 @@ function renderState() {
 }
 
 window.on('load', function (event) {
-  // retrieveCategories()
-  //   .then(renderState);
   setCurrentMonthToStore();
   renderState();
 })

@@ -74,6 +74,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .fa-arrow-left,
@@ -180,8 +181,8 @@ footer {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 40%;
-  min-width: 20%;
+  height: 55%;
+  min-width: 30%;
   color: black;
   background-color: white;
   border-radius: 5px;
@@ -206,4 +207,9 @@ footer {
 .radio-btns {
   display: flex;
   flex-direction: column;
+}
+
+select,
+option {
+  padding: 8px;
 }
