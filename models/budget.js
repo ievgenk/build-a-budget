@@ -53,7 +53,12 @@ const categoriesSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Subcategory',
     autopopulate: true
-  }]
+  }],
+  month: {
+    type: Schema.Types.ObjectId,
+    ref: 'Month',
+    autopopulate: true
+  }
 }).plugin(autopopulate)
 
 categoriesSchema.index({
@@ -78,27 +83,17 @@ const transactionSchema = new Schema({
   positive: Boolean,
   negative: Boolean,
   description: String,
-  monthlyBudget: {
+  month: {
     type: Schema.Types.ObjectId,
-    ref: 'MonthlyBudget',
+    ref: 'Month',
     autopopulate: true
   }
 }).plugin(autopopulate)
 
-
-
 let Transaction = mongoose.model('Transaction', transactionSchema);
 
-const monthlyBudgetSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    autopopulate: true
-  },
-  year: {
-    type: Number,
-    required: true
-  },
+
+const MonthSchema = new Schema({
   month: {
     type: Number,
     required: true
@@ -113,11 +108,27 @@ const monthlyBudgetSchema = new Schema({
     ref: 'Transaction',
     autopopulate: true
   }],
-  allTransactionsCategories: [{
+  categories: [{
     type: Schema.Types.ObjectId,
     ref: 'Category',
     autopopulate: true
   }]
+}).plugin(autopopulate)
+
+let Month = mongoose.model('Month', MonthSchema);
+
+
+const monthlyBudgetSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: true
+  },
+  month: {
+    type: Schema.Types.ObjectId,
+    ref: 'Month',
+    autopopulate: true
+  }
 }).plugin(autopopulate)
 
 
@@ -133,5 +144,6 @@ module.exports = {
   MonthlyBudget,
   Transaction,
   Category,
-  Subcategory
+  Subcategory,
+  Month
 }

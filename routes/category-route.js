@@ -9,7 +9,8 @@ const {
   MonthlyBudget,
   Transaction,
   Category,
-  Subcategory
+  Subcategory,
+  Month
 } = require('../models/budget');
 
 router.get('/', (req, res) => {
@@ -24,12 +25,21 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   let categoryName = req.body.categoryName;
+  let monthId = req.body.monthId;
   new Category({
-      name: categoryName
+      name: categoryName,
+      month: monthId
     })
     .save()
     .then(category => {
-      res.status(200).json(category)
+      let chosenMonth = Month.findByIdAndUpdate(req.body.monthId, {
+          $push: {
+            categories: category
+          }
+        })
+        .then(month => {
+          res.status(200).json(month)
+        })
     })
     .catch(err => {
       res.status(err.status || 500).json(err)

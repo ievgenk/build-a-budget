@@ -107,10 +107,11 @@ const BUDGET = {
 
 
 const STORE = {
-  selectedYear: 2018,
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  monthlyBudgetData: '',
   categories: [],
+  transactions: [],
   CategoryToAdd: '',
   CategoryToDelete: '',
   SubCategoryToDelete: '',
@@ -170,13 +171,32 @@ function renderTable() {
 }
 
 
+// SET CURRENT MONTH TO STORE
+
+function setCurrentMonthToStore() {
+  STORE.selectedMonth = moment().month()
+}
+
+// RETRIEVE MONTHLY BUDGET DATA
+
+function retrieveMontlyBudgetData() {
+  return axios({
+      url: `${serverURL}/api/monthlyBudget/${STORE.selectedMonth}`,
+      method: 'get'
+    })
+    .then(result => {
+      STORE.monthlyBudgetData = result.data;
+      STORE.categories = result.data.categories;
+      STORE.budget = result.data.budget;
+      STORE.transactions = result.data.transactions;
+    });
+}
+
 
 //SET CATEGORIES
 
 function renderCategories() {
   try {
-
-
     const categories = STORE.categories;
     formCategoryDropDown.innerHTML = '';
     for (let category of categories) {
@@ -192,15 +212,8 @@ function renderCategories() {
   }
 }
 
-// GET CALL TO RETRIEVE CURRENT YEAR AND MONTH BUDGET
-
-function retrieveBudgetValue() {
-  return axios.get(`${serverURL}/api/budget/${STORE.selectedYear}/${STORE.selectedMonth}`)
-    .then(budgetData => STORE.budget = budgetData.data.budget)
-}
-
 function displayCurrentMonth() {
-  monthDisplay.innerHTML = `<h2>${STORE.allMonths[STORE.selectedMonth - 1]}</h2>`
+  monthDisplay.innerHTML = `<h2>${STORE.allMonths[STORE.selectedMonth]}</h2>`
 }
 
 function displayBudgetValue() {
@@ -213,12 +226,13 @@ function displayBudgetValue() {
 function addMoneyToBudget() {
   STORE.budget += parseInt(moneyValueInput.value);
   return axios({
-    url: `${serverURL}/api/budget/${STORE.selectedYear}/${STORE.selectedMonth}`,
+    url: `${serverURL}/api/monthlyBudget/${STORE.selectedMonth}`,
     method: 'put',
     data: {
       budget: STORE.budget
     }
   })
+
 }
 
 
@@ -257,7 +271,8 @@ function addCategory() {
     url: `${serverURL}/api/categories`,
     method: 'post',
     data: {
-      categoryName: categoryNameInput.value
+      categoryName: categoryNameInput.value,
+      monthId: STORE.monthlyBudgetData._id
     }
   })
 }
@@ -395,6 +410,7 @@ addSubcategoryForm.on('submit', function (event) {
 
 addIncomeBtn.on('click', function () {
   addTransactionFormDiv.classList.toggle('hidden');
+  STORE.inputTransactionForm.selectedSubCategory = '';
 })
 
 // CLOSE FORM BTN
@@ -420,10 +436,12 @@ closeBtnCategoryForm.on('click', function () {
 // LEFT ARROW BTN
 
 leftArrow.on('click', function (event) {
-  if (STORE.selectedMonth > 1) {
+  if (STORE.selectedMonth > 0) {
     STORE.selectedMonth--;
-    retrieveBudgetValue()
-      .then(renderState);
+    STORE.inputTransactionForm.selectedSubCategory = '';
+    STORE.inputTransactionForm.selectedCategory = '';
+    formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
+    renderState();
   } else {
     return;
   }
@@ -432,10 +450,12 @@ leftArrow.on('click', function (event) {
 // RIGHT ARROW BTN
 
 rightArrow.on('click', function (event) {;
-  if (STORE.selectedMonth < STORE.allMonths.length) {
+  if (STORE.selectedMonth < STORE.allMonths.length - 1) {
     STORE.selectedMonth++;
-    retrieveBudgetValue()
-      .then(renderState);
+    STORE.inputTransactionForm.selectedSubCategory = '';
+    STORE.inputTransactionForm.selectedCategory = '';
+    formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
+    renderState();
   } else {
     return;
   }
@@ -481,7 +501,6 @@ categoryForm.on('submit', function (event) {
       }
       console.log(response)
     })
-    .then(retrieveCategories)
     .then(renderState)
     .catch(err => {
       alert('Category already exists')
@@ -550,7 +569,6 @@ editCategoriesBtn.on('click', function (event) {
     icon.on('click', function (event) {
       STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
       deleteCategory()
-        .then(retrieveCategories)
         .then(renderState)
     })
   }
@@ -569,20 +587,21 @@ editCategoriesBtn.on('click', function (event) {
 // RENDER STATE
 
 function renderState() {
-  retrieveBudgetValue();
-  displayBudgetValue();
-  displayCurrentMonth();
-  renderCategories();
-  renderSubCategories();
-  renderTable();
-  displayAllTransactions();
-  addListenersOnSubcategoryButtons();
+  retrieveMontlyBudgetData()
+    .then(displayBudgetValue)
+    .then(displayCurrentMonth)
+    .then(renderTable)
+    .then(addListenersOnSubcategoryButtons)
+    .then(renderCategories)
+  //renderTable();
+  //displayAllTransactions();
+  //addListenersOnSubcategoryButtons();
 
 }
 
 window.on('load', function (event) {
-  retrieveCategories()
-    .then(retrieveBudgetValue)
-    .then(displayBudgetValue)
-    .then(renderState);
+  // retrieveCategories()
+  //   .then(renderState);
+  setCurrentMonthToStore();
+  renderState();
 })

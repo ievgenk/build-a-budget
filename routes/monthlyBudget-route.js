@@ -1,5 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+router.use(express.json());
+
 const {
   User,
   MonthlyBudget,
@@ -9,35 +13,32 @@ const {
   Month
 } = require('../models/budget');
 
-const autopopulate = require('mongoose-autopopulate');
 
-router.use(express.json());
-
-router.get('/:year/:month', (req, res) => {
-
-  MonthlyBudget.findOne({
-      year: parseInt(req.params.year),
-      month: parseInt(req.params.month)
+router.get('/:month', (req, res) => {
+  Month.findOne({
+      month: req.params.month
     })
-    .then(budget => {
-      if (!budget) {
-        budget = new MonthlyBudget({
-            year: parseInt(req.params.year),
+    .then(month => {
+      if (!month) {
+        month = new Month({
             month: parseInt(req.params.month)
           })
           .save()
       }
-      return budget;
+      return month;
     })
-    .then(budget => {
-      res.status(200).json(budget);
+    .then(month => {
+      res.status(200).json(month);
+    })
+    .catch(error => {
+      console.log(error)
     })
 })
 
-router.put('/:year/:month', (req, res) => {
 
-  MonthlyBudget.findOneAndUpdate({
-      year: parseInt(req.params.year),
+router.put('/:month', (req, res) => {
+
+  Month.findOneAndUpdate({
       month: parseInt(req.params.month)
     }, {
       budget: req.body.budget
@@ -50,6 +51,11 @@ router.put('/:year/:month', (req, res) => {
     .catch(err => {
       console.log(err)
     })
+
 })
+
+
+
+
 
 module.exports = router;

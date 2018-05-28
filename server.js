@@ -9,7 +9,8 @@ const {
   MonthlyBudget,
   Transaction,
   Category,
-  Subcategory
+  Subcategory,
+  Month
 } = require('./models/budget');
 const autopopulate = require('mongoose-autopopulate');
 
@@ -19,6 +20,7 @@ const categoryRoute = require('./routes/category-route');
 const budgetRoute = require('./routes/budget-route');
 const subCategoryRoute = require('./routes/subCategory-route');
 const transactionsRoute = require('./routes/transactions-route');
+const monthlyBudgetRoute = require('./routes/monthlyBudget-route');
 
 // DataBase Connection
 mongoose.connect('mongodb://localhost:27017/BuildABudget')
@@ -39,6 +41,7 @@ app.use('/api/categories', categoryRoute);
 app.use('/api/budget', budgetRoute);
 app.use('/api/subcategories', subCategoryRoute);
 app.use('/api/transactions', transactionsRoute);
+app.use('/api/monthlyBudget', monthlyBudgetRoute);
 
 
 // Server Funcationality
