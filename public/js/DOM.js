@@ -42,3 +42,5 @@ const moneyValueInput = document.querySelector('#money-value');
 const addSubcategoryForm = document.querySelector('.add-subCategory-form');
 const addSubCategoryInput = document.querySelector('#subCategory-title');
 const subCategoryBudgeFormDrop = document.querySelector('#subcategory-budget-money-dropdown');
+const subCategoryBudgetFormValue = document.querySelector('#subcategory-value');
+const allocateBudgetedMoneyForm = document.querySelector('.budget-money-form');

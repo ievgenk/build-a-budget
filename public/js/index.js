@@ -181,6 +181,7 @@ function setCurrentMonthToStore() {
 // ADDING ALL SUBCATEGORIES TO THE STORE
 
 function addAllSubcategoriesToStore() {
+  STORE.allSubcategories = [];
   STORE.categories.forEach(category => {
     for (let subCategory of category.listOfSubCategories) {
       STORE.allSubcategories.push(subCategory)
@@ -276,6 +277,28 @@ function renderSubCategoriesBudgetForm() {
   }
 }
 
+
+// DISTRIBUTE BUDGETED MONEY TO A SUBCATEGORY
+
+function distributeBudgetedMoney() {
+  let matchingSubCategory = STORE.allSubcategories.find(subCategory => subCategory.title === subCategoryBudgeFormDrop.value)
+  let subCategoryId = matchingSubCategory._id
+
+  if (STORE.budget < parseInt(subCategoryBudgetFormValue.value)) {
+    return alert('Insufficient fund to transfer')
+  }
+
+  return axios({
+    url: `${serverURL}/api/monthlyBudget`,
+    method: 'put',
+    data: {
+      monthId: STORE.monthlyBudgetData._id,
+      subCategoryId: subCategoryId,
+      value: parseInt(subCategoryBudgetFormValue.value)
+    }
+  })
+}
+
 // RETRIEVE CATEGORIES
 
 function retrieveCategories() {
@@ -302,22 +325,32 @@ function addCategory() {
 //ADD TRANSACTION TO DB
 
 function addATransaction() {
-  let selectedCat = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory)
+  let selectedCatId = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory)._id;
 
   let selectSubCatId = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id
 
   let booleanValue;
 
+  if (radioNegative.checked === true) {
+    booleanValue = false;
+  } else if (radioPositive.checked === true) {
+    booleanValue = true;
+  }
 
+  let briefDescription = briefDescriptionInput.value;
+
+  let dollarValue = dollarValueInput.value;
 
 
   return axios({
     url: `${serverURL}/api/transactions`,
     method: 'post',
     data: {
+      categoryId: selectedCatId,
       subCategory: selectSubCatId,
-      value: dollarValueInput.value,
-
+      value: dollarValue,
+      description: briefDescription,
+      booleanValue: booleanValue
     }
   })
 }
@@ -540,8 +573,18 @@ categoryForm.on('submit', function (event) {
     })
     .then(renderState)
     .catch(err => {
-      alert('Category already exists')
+      console.log(err)
     })
+})
+
+// ALLOCATE BUDGETED MONEY FORM
+
+allocateBudgetedMoneyForm.on('submit', function (event) {
+  event.preventDefault();
+
+  distributeBudgetedMoney()
+    .then(alert('Succesfull Moeny Re-distribution'))
+    .then(renderState)
 })
 
 //CLOSE BTN

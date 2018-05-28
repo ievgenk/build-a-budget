@@ -61,12 +61,6 @@ const categoriesSchema = new Schema({
   }
 }).plugin(autopopulate)
 
-categoriesSchema.index({
-  user: 1,
-  name: 1
-}, {
-  unique: true
-})
 
 let Category = mongoose.model('Category', categoriesSchema);
 

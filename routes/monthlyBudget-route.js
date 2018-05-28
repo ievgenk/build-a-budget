@@ -54,6 +54,27 @@ router.put('/:month', (req, res) => {
 
 })
 
+router.put('/', (req, res) => {
+
+  Month.findByIdAndUpdate(req.body.monthId, {
+      $inc: {
+        budget: -(req.body.value)
+      }
+    })
+    .then(() => {
+      Subcategory.findByIdAndUpdate(req.body.subCategoryId, {
+          $inc: {
+            budgeted: req.body.value
+          }
+        })
+        .then(() => {
+          res.status(204).end()
+        })
+    })
+    .catch(err => console.log(err))
+
+})
+
 
 
 
