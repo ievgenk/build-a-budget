@@ -49,9 +49,6 @@ router.post('/', (req, res) => {
 router.delete('/:id', (req, res) => {
   Transaction.findByIdAndRemove(req.params.id)
     .then(() => {
-
-
-
       if (req.body.subCategory !== undefined) {
         Subcategory.findByIdAndUpdate(req.body.subCategory, {
             $inc: {
@@ -60,7 +57,7 @@ router.delete('/:id', (req, res) => {
             }
           })
           .then((result) => {
-            res.status(202).json(result);
+            res.status(202).end();
           })
       } else if (req.body.subCategory === undefined) {
         Month.findByIdAndUpdate(req.body.monthID, {
@@ -69,7 +66,7 @@ router.delete('/:id', (req, res) => {
             }
           })
           .then((result) => {
-            res.status(202).json(result);
+            res.status(202).end();
           })
       }
     })
