@@ -65,22 +65,21 @@ const categoriesSchema = new Schema({
 let Category = mongoose.model('Category', categoriesSchema);
 
 const transactionSchema = new Schema({
+  category: {
+    type: String
+  },
   subCategory: {
-    type: Schema.Types.ObjectId,
-    ref: 'Subcategory',
-    autopopulate: true
+    type: String,
+    required: true
   },
   value: {
     type: Number,
     required: true
   },
-  positive: Boolean,
-  negative: Boolean,
   description: String,
   month: {
     type: Schema.Types.ObjectId,
-    ref: 'Month',
-    autopopulate: true
+    ref: 'Month'
   }
 }).plugin(autopopulate)
 
@@ -120,8 +119,7 @@ const monthlyBudgetSchema = new Schema({
   },
   month: {
     type: Schema.Types.ObjectId,
-    ref: 'Month',
-    autopopulate: true
+    ref: 'Month'
   }
 }).plugin(autopopulate)
 

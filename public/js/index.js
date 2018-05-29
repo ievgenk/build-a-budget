@@ -1,110 +1,8 @@
 const serverURL = 'http://127.0.0.1:8080'
 
+
+
 // STATE
-const BUDGET = {
-  selectedYear: 2018,
-  selectedMonth: 5,
-  byYear: {
-    2018: {
-      byMonth: {
-        4: {
-          budget: 1400,
-          transactions: [{
-            category: 'Bills',
-            subCategory: 'Shaw Internet',
-            value: 45,
-            positive: true,
-            negative: false,
-            description: ''
-          }],
-          categories: {
-            bills: [{
-              title: 'Pet Insurance',
-              budgeted: 45,
-              spent: 45
-            }, {
-              title: 'Bc Hydro',
-              budgeted: 0,
-              spent: 0
-            }, {
-              title: 'Shaw',
-              budgeted: 0,
-              spent: 0
-            }],
-            travelling: [],
-            pet: []
-          }
-        },
-        5: {
-          budget: 5400,
-          transactions: [{
-            category: 'Bills',
-            subCategory: 'Shaw Internet',
-            value: 45,
-            positive: true,
-            negative: false,
-            description: '',
-          }],
-          categories: {
-            bills: [{
-              title: 'Freedom Mobile',
-              budgeted: 190,
-              spent: 0
-            }, {
-              title: 'Bc Hydro',
-              budgeted: 120,
-              spent: 60
-            }, {
-              title: 'Shaw',
-              budgeted: 88,
-              spent: 88
-            }],
-            Dinning: [{
-              title: 'Tim Hortons',
-              budgeted: 60,
-              spent: 23
-            }, {
-              title: 'Starbucks',
-              budgeted: 0,
-              spent: 0
-            }],
-            pet: [{
-              title: 'Bosleys',
-              budgeted: 0,
-              spent: 0
-            }]
-          }
-        },
-        6: {
-          budget: 3400,
-          transactions: [{
-            category: 'Bills',
-            subCategory: 'Shaw Internet',
-            value: 45,
-            positive: true,
-            negative: false,
-            description: ''
-          }],
-          categories: {
-            bills: [{
-              title: 'Bc Hydro',
-              budgeted: 0,
-              spent: 0
-            }, {
-              title: 'Shaw',
-              budgeted: 0,
-              spent: 0
-            }],
-            restaurants: [],
-            pet: []
-          }
-        }
-      }
-    }
-  }
-};
-
-
 
 const STORE = {
   selectedMonth: 5,
@@ -153,9 +51,9 @@ function renderTable() {
       return `<tbody>
   <tr>
     <td>${subcategory.title}</td>
-    <td>${subcategory.budgeted}</td>
+    <td>${parseFloat(subcategory.budgeted).toFixed(2)}</td>
     <td class="remove-subcategory-td">
-    ${subcategory.spent}
+    ${parseFloat(subcategory.spent).toFixed(2)}
     <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}">
     <i class="far fa-minus-square hidden"></i>
     </span>
@@ -325,32 +223,36 @@ function addCategory() {
 //ADD TRANSACTION TO DB
 
 function addATransaction() {
-  let selectedCatId = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory)._id;
+  let selectedCat = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory);
 
-  let selectSubCatId = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id
+  let selectedCatName = selectedCat.name
 
-  let booleanValue;
+  let selectSubCatName = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory).title
+
+  let subCategoryId = selectedCat.listOfSubCategories.find(subCategory => subCategory.title === STORE.inputTransactionForm.selectedSubCategory)._id;
+
+  let dollarValue;
+
 
   if (radioNegative.checked === true) {
-    booleanValue = false;
+    dollarValue = -(parseFloat(dollarValueInput.value).toFixed(2));
   } else if (radioPositive.checked === true) {
-    booleanValue = true;
+    dollarValue = parseFloat(dollarValueInput.value).toFixed(2);
   }
 
   let briefDescription = briefDescriptionInput.value;
-
-  let dollarValue = dollarValueInput.value;
 
 
   return axios({
     url: `${serverURL}/api/transactions`,
     method: 'post',
     data: {
-      categoryId: selectedCatId,
-      subCategory: selectSubCatId,
+      subCategoryId: subCategoryId,
+      category: selectedCatName,
+      subCategory: selectSubCatName,
       value: dollarValue,
       description: briefDescription,
-      booleanValue: booleanValue
+      monthId: STORE.monthlyBudgetData._id
     }
   })
 }
@@ -359,26 +261,30 @@ function addATransaction() {
 //DISPLAY ALL TRANSACTIONS
 
 function displayAllTransactions() {
-  const transactionArr = BUDGET.byYear[BUDGET.selectedYear].byMonth[BUDGET.selectedMonth].transactions;
+  const transactionArr = STORE.monthlyBudgetData.transactions;
   let transactionsHTML = '';
 
+  if (transactionArr.length < 1) {
+    return transactionTable.innerHTML = `<h1>No transactions posted this month.</h1>`
+  }
+
+  let transactionProperties = Object.keys(transactionArr[0]);
+  transactionsHTML += `<thead>
+  <tr>
+    <th>${transactionProperties[1]}
+    </th>
+    <th>${transactionProperties[2]}</th>
+    <th>
+    ${transactionProperties[3]}
+    </th>
+    <th>
+    ${transactionProperties[4]}
+    </th>
+  </tr>
+</thead>`
   for (let transaction of transactionArr) {
-    let transactionProperties = Object.keys(transaction);
     transactionsHTML +=
-      `<thead>
-    <tr>
-      <th>${transactionProperties[0]}
-      </th>
-      <th>${transactionProperties[1]}</th>
-      <th>
-      ${transactionProperties[2]}
-      </th>
-      <th>
-      ${transactionProperties[5]}
-      </th>
-    </tr>
-  </thead>
-  <tbody>
+      `<tbody>
         <tr>
           <td>${transaction.category}</td>
           <td>${transaction.subCategory}</td>
@@ -415,11 +321,27 @@ function deleteCategory() {
   let matchingCategory = STORE.categories.find(category => {
     return category.name === categoryToDelete;
   })
+  let totalValue = 0;
+  matchingCategory.listOfSubCategories.forEach(subCategory => {
+    return totalValue += subCategory.budgeted;
+  })
+
   let categoryId = matchingCategory._id;
+
+  let arrOfSubCatIds = matchingCategory.listOfSubCategories.map(subCategory => {
+    return subCategory._id
+  })
+
+  console.log(totalValue)
 
   return axios({
     url: `${serverURL}/api/categories/${categoryId}`,
-    method: 'delete'
+    method: 'delete',
+    data: {
+      monthId: STORE.monthlyBudgetData._id,
+      value: totalValue,
+      subCatArr: arrOfSubCatIds
+    }
   })
 }
 
@@ -477,8 +399,8 @@ addSubcategoryForm.on('submit', function (event) {
 //ADD INCOME BTN
 
 addIncomeBtn.on('click', function () {
-  addTransactionFormDiv.classList.toggle('hidden');
-  STORE.inputTransactionForm.selectedSubCategory = '';
+  retrieveCategories()
+    .then(addTransactionFormDiv.classList.toggle('hidden'))
 })
 
 // CLOSE FORM BTN
@@ -625,8 +547,12 @@ addMoneyForm.on('submit', function (event) {
 
 addTransactionForm.on('submit', function (event) {
   event.preventDefault();
-  return
-
+  addATransaction()
+    .then(transaction => {
+      alert('Succesfully added transaction!')
+      console.log(transaction)
+    })
+    .then(renderState)
 })
 
 //EDIT CATEGORIES BTN
@@ -675,10 +601,7 @@ function renderState() {
     .then(renderCategories)
     .then(addAllSubcategoriesToStore)
     .then(renderSubCategoriesBudgetForm)
-  //renderTable();
-  //displayAllTransactions();
-  //addListenersOnSubcategoryButtons();
-
+    .then(displayAllTransactions);
 }
 
 window.on('load', function (event) {
