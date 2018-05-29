@@ -39,7 +39,14 @@ router.delete('/:id', (req, res) => {
       _id: req.params.id
     })
     .then(result => {
-      res.status(202).end();
+      Month.findByIdAndUpdate(req.body.monthID, {
+          $inc: {
+            budget: req.body.budgeted
+          }
+        })
+        .then(() => {
+          res.status(202).end();
+        })
     })
     .catch(err => {
       console.log(err)

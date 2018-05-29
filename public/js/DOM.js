@@ -27,6 +27,7 @@ const editCategoriesBtn = document.querySelector('.edit-categories');
 const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
 
 
+
 // FORMS
 const transactionTable = document.querySelector('.transactions-table');
 const formCategoryDropDown = document.querySelector('#category');

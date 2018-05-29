@@ -16,8 +16,7 @@ let User = mongoose.model('User', userSchema);
 const subcategorySchema = new Schema({
   category: {
     type: Schema.Types.ObjectId,
-    ref: 'Category',
-    autopopulate: true
+    ref: 'Category'
   },
   title: {
     type: String,

@@ -46,6 +46,38 @@ router.post('/', (req, res) => {
     })
 })
 
+router.delete('/:id', (req, res) => {
+  Transaction.findByIdAndRemove(req.params.id)
+    .then(() => {
+
+
+
+      if (req.body.subCategory !== undefined) {
+        Subcategory.findByIdAndUpdate(req.body.subCategory, {
+            $inc: {
+              budgeted: (req.body.value) * -1,
+              spent: req.body.value
+            }
+          })
+          .then((result) => {
+            res.status(202).json(result);
+          })
+      } else if (req.body.subCategory === undefined) {
+        Month.findByIdAndUpdate(req.body.monthID, {
+            $inc: {
+              budget: (req.body.value) * -1
+            }
+          })
+          .then((result) => {
+            res.status(202).json(result);
+          })
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+})
+
 
 
 module.exports = router;

@@ -11,9 +11,11 @@ const STORE = {
   allSubcategories: [],
   categories: [],
   transactions: [],
+  transactionToBeDeleted: {},
   CategoryToAdd: '',
   CategoryToDelete: '',
   SubCategoryToDelete: '',
+  SubCategoryToDeleteBudgeted: 0,
   subCategoryToBeAdded: '',
   inputTransactionForm: {
     selectedCategory: '',
@@ -54,7 +56,7 @@ function renderTable() {
     <td>${parseFloat(subcategory.budgeted).toFixed(2)}</td>
     <td class="remove-subcategory-td">
     ${parseFloat(subcategory.spent).toFixed(2)}
-    <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}">
+    <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}" data-valueSubCategory="${subcategory.budgeted}" data-transaction-vale>
     <i class="far fa-minus-square hidden"></i>
     </span>
     </td>
@@ -99,6 +101,15 @@ function retrieveMontlyBudgetData() {
       STORE.categories = result.data.categories;
       STORE.budget = result.data.budget;
       STORE.transactions = result.data.transactions;
+    })
+    .then(() => {
+      if (STORE.categories.length > 0) {
+        STORE.inputTransactionForm.selectedCategory = STORE.categories[0].name;
+        if (STORE.categories[0].listOfSubCategories.length > 0) {
+          STORE.inputTransactionForm.selectedSubCategory = STORE.categories[0].listOfSubCategories[0].title;
+        }
+      }
+
     });
 }
 
@@ -127,7 +138,7 @@ function displayCurrentMonth() {
 }
 
 function displayBudgetValue() {
-  budgetedMoneyValue.innerHTML = `${STORE.budget}$`
+  budgetedMoneyValue.innerHTML = `${parseFloat(STORE.budget).toFixed(2)}$`
 }
 
 
@@ -194,16 +205,6 @@ function distributeBudgetedMoney() {
       subCategoryId: subCategoryId,
       value: parseInt(subCategoryBudgetFormValue.value)
     }
-  })
-}
-
-// RETRIEVE CATEGORIES
-
-function retrieveCategories() {
-  return axios.get(serverURL + '/api/categories').then(categories => {
-    STORE.categories = categories.data
-    STORE.inputTransactionForm.selectedCategory = STORE.categories[0].name;
-    STORE.inputTransactionForm.selectedSubCategory = STORE.categories[0].listOfSubCategories[0].title;
   })
 }
 
@@ -289,7 +290,8 @@ function displayAllTransactions() {
           <td>${transaction.category}</td>
           <td>${transaction.subCategory}</td>
           <td>${transaction.value}</td>
-          <td>${transaction.description}</td>
+          <td class="delete-btn-transaction-td" data-transactionId="${transaction._id}"data-transactionSubCategory="${transaction.subCategory}" data-transaction-value="${transaction.value}"><span>${transaction.description}</span>
+          <span class='remove-transaction'><i class="far fa-minus-square"></i></span></td>
         </tr>
         </tbody>`;
   }
@@ -349,9 +351,28 @@ function deleteCategory() {
 
 function deleteSubCategory() {
   let subCategoryToDelete = STORE.SubCategoryToDelete;
+  let subCategoryToDeleteBudgeted = STORE.SubCategoryToDeleteBudgeted;
   return axios({
     url: `${serverURL}/api/subcategories/${subCategoryToDelete}`,
-    method: 'delete'
+    method: 'delete',
+    data: {
+      monthID: STORE.monthlyBudgetData._id,
+      budgeted: subCategoryToDeleteBudgeted
+    }
+  })
+}
+
+// DELETING TRANSACTION FROM DB
+
+function deleteTransaction() {
+  return axios({
+    url: `${serverURL}/api/transactions/${STORE.transactionToBeDeleted.id}`,
+    method: 'delete',
+    data: {
+      monthID: STORE.monthlyBudgetData._id,
+      subCategory: STORE.transactionToBeDeleted.subCategory,
+      value: STORE.transactionToBeDeleted.value
+    }
   })
 }
 
@@ -369,16 +390,41 @@ function addListenersOnSubcategoryButtons() {
 }
 
 
+// ADDING EVENT LISTENERS ON DELETE TRANSACTION BTNS
+
+function addListenersDeleteTransaction() {
+  let btnArr = document.querySelectorAll('.remove-transaction');
+
+  for (let btn of btnArr) {
+    btn.on('click', function (event) {
+      STORE.transactionToBeDeleted.id = event.currentTarget.parentNode.getAttribute("data-transactionId")
+      let subCategoryTitle = event.currentTarget.parentNode.getAttribute("data-transactionSubCategory")
+      STORE.transactionToBeDeleted.value = event.currentTarget.parentNode.getAttribute("data-transaction-value")
+
+
+
+      let subCat = STORE.allSubcategories.find(subcategory => {
+        return subcategory.title === subCategoryTitle;
+      })
+      if (subCat === undefined) {
+        STORE.transactionToBeDeleted.subCategory = undefined
+      } else {
+        STORE.transactionToBeDeleted.subCategory = subCat._id
+      }
+
+      deleteTransaction()
+        .then(renderState)
+    })
+  }
+}
 
 // EVENT LISTENERS -- DOM RENDERING
 
-
-// MONEY BUDGETING DIV
+//Money Budget Div
 
 moneyBudgetedDiv.on('click', function (event) {
   moneyBudgetFormDiv.classList.toggle('hidden');
 })
-
 
 // MONEY BUDGET DIV CLOSE BTN
 
@@ -391,7 +437,6 @@ closeBtnBudgetMoney.on('click', function (event) {
 addSubcategoryForm.on('submit', function (event) {
   event.preventDefault();
   saveSubCategoryToDB()
-    .then(retrieveCategories)
     .then(renderState)
 })
 
@@ -399,8 +444,8 @@ addSubcategoryForm.on('submit', function (event) {
 //ADD INCOME BTN
 
 addIncomeBtn.on('click', function () {
-  retrieveCategories()
-    .then(addTransactionFormDiv.classList.toggle('hidden'))
+  renderSubCategories();
+  addTransactionFormDiv.classList.toggle('hidden')
 })
 
 // CLOSE FORM BTN
@@ -525,6 +570,7 @@ viewAllTransactionsBtn.on('click', function (event) {
     event.currentTarget.textContent = 'View All Transactions';
   }
   displayAllTransactions();
+  addListenersDeleteTransaction();
   transactionListDiv.classList.toggle('hidden');
 })
 
@@ -582,8 +628,8 @@ editCategoriesBtn.on('click', function (event) {
   for (let subCatIcon of subCategoryTableRemoveIcons) {
     subCatIcon.on('click', function (event) {
       STORE.SubCategoryToDelete = event.currentTarget.getAttribute("data-subcategory");
+      STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.getAttribute("data-valueSubCategory")).toFixed(2);
       deleteSubCategory()
-        .then(retrieveCategories)
         .then(renderState)
     })
   }

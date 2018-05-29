@@ -145,6 +145,13 @@ nav {
   justify-content: space-between
 }
 
+/* TRANSACTIONS */
+
+.delete-btn-transaction-td {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Footer */
 
 footer {
