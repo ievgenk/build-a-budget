@@ -47,12 +47,24 @@ router.post('/', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-  Transaction.findByIdAndRemove(req.params.id)
+  Transaction.findOneAndRemove({
+      _id: req.params.id
+    })
+    .then((found) => {
+      if (!found) {
+        throw new Error('ID not found')
+      }
+      return Month.findByIdAndUpdate(req.body.monthID, {
+        $pull: {
+          transactions: mongoose.Types.ObjectId(req.params.id)
+        }
+      })
+    })
     .then(() => {
       if (req.body.subCategory !== undefined) {
         Subcategory.findByIdAndUpdate(req.body.subCategory, {
             $inc: {
-              budgeted: (req.body.value) * -1,
+              budgeted: -req.body.value,
               spent: req.body.value
             }
           })
@@ -62,7 +74,7 @@ router.delete('/:id', (req, res) => {
       } else if (req.body.subCategory === undefined) {
         Month.findByIdAndUpdate(req.body.monthID, {
             $inc: {
-              budget: (req.body.value) * -1
+              budget: -req.body.value
             }
           })
           .then((result) => {
@@ -71,7 +83,7 @@ router.delete('/:id', (req, res) => {
       }
     })
     .catch(err => {
-      console.log(err)
+      res.status(500).send(err)
     })
 })
 

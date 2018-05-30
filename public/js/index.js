@@ -55,7 +55,7 @@ function renderTable() {
     <td>${subcategory.title}</td>
     <td>${parseFloat(subcategory.budgeted).toFixed(2)}</td>
     <td class="remove-subcategory-td">
-    ${parseFloat(subcategory.spent).toFixed(2)}
+    ${parseFloat(subcategory.spent).toFixed(2)* -1}
     <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}" data-valueSubCategory="${subcategory.budgeted}" data-transaction-vale>
     <i class="far fa-minus-square hidden"></i>
     </span>
@@ -291,7 +291,7 @@ function displayAllTransactions() {
           <td>${transaction.subCategory}</td>
           <td>${transaction.value}</td>
           <td class="delete-btn-transaction-td" data-transactionId="${transaction._id}"data-transactionSubCategory="${transaction.subCategory}" data-transaction-value="${transaction.value}"><span>${transaction.description}</span>
-          <span class='remove-transaction'><i class="far fa-minus-square"></i></span></td>
+          <i class="far fa-minus-square remove-transaction"></i></td>
         </tr>
         </tbody>`;
   }
@@ -371,7 +371,7 @@ function deleteTransaction() {
     data: {
       monthID: STORE.monthlyBudgetData._id,
       subCategory: STORE.transactionToBeDeleted.subCategory,
-      value: STORE.transactionToBeDeleted.value
+      value: parseFloat(STORE.transactionToBeDeleted.value)
     }
   })
 }
@@ -395,11 +395,13 @@ function addListenersOnSubcategoryButtons() {
 function addListenersDeleteTransaction() {
   let btnArr = document.querySelectorAll('.remove-transaction');
 
-  for (let btn of btnArr) {
-    btn.on('click', function (event) {
-      STORE.transactionToBeDeleted.id = event.currentTarget.parentNode.getAttribute("data-transactionId")
-      let subCategoryTitle = event.currentTarget.parentNode.getAttribute("data-transactionSubCategory")
-      STORE.transactionToBeDeleted.value = event.currentTarget.parentNode.getAttribute("data-transaction-value")
+  document.body.addEventListener('click', function (event) {
+
+    if (event.target.classList.contains('remove-transaction')) {
+
+      STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
+      let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
+      STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
 
 
 
@@ -411,11 +413,20 @@ function addListenersDeleteTransaction() {
       } else {
         STORE.transactionToBeDeleted.subCategory = subCat._id
       }
-
+      console.log('click')
       deleteTransaction()
-        .then(renderState)
-    })
-  }
+        .then(refreshState)
+    }
+  })
+}
+
+
+// REFRESH STATE
+
+function refreshState() {
+  console.log('refresh state')
+  return retrieveMontlyBudgetData()
+    .then(renderState)
 }
 
 // EVENT LISTENERS -- DOM RENDERING
@@ -437,7 +448,7 @@ closeBtnBudgetMoney.on('click', function (event) {
 addSubcategoryForm.on('submit', function (event) {
   event.preventDefault();
   saveSubCategoryToDB()
-    .then(renderState)
+    .then(refreshState)
 })
 
 
@@ -477,7 +488,7 @@ leftArrow.on('click', function (event) {
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
     STORE.allSubcategories = [];
-    renderState();
+    refreshState()
   } else {
     return;
   }
@@ -492,7 +503,7 @@ rightArrow.on('click', function (event) {;
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
     STORE.allSubcategories = [];
-    renderState();
+    refreshState()
   } else {
     return;
   }
@@ -538,7 +549,7 @@ categoryForm.on('submit', function (event) {
       }
       console.log(response)
     })
-    .then(renderState)
+    .then(refreshState)
     .catch(err => {
       console.log(err)
     })
@@ -551,7 +562,7 @@ allocateBudgetedMoneyForm.on('submit', function (event) {
 
   distributeBudgetedMoney()
     .then(alert('Succesfull Moeny Re-distribution'))
-    .then(renderState)
+    .then(refreshState)
 })
 
 //CLOSE BTN
@@ -570,7 +581,6 @@ viewAllTransactionsBtn.on('click', function (event) {
     event.currentTarget.textContent = 'View All Transactions';
   }
   displayAllTransactions();
-  addListenersDeleteTransaction();
   transactionListDiv.classList.toggle('hidden');
 })
 
@@ -585,7 +595,7 @@ addMoneyBtn.on('click', function (event) {
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
   addMoneyToBudget()
-    .then(renderState).then(alert('Succesfully added money to budget'));
+    .then(refreshState).then(alert('Succesfully added money to budget'));
 
 })
 
@@ -598,7 +608,7 @@ addTransactionForm.on('submit', function (event) {
       alert('Succesfully added transaction!')
       console.log(transaction)
     })
-    .then(renderState)
+    .then(refreshState)
 })
 
 //EDIT CATEGORIES BTN
@@ -621,7 +631,7 @@ editCategoriesBtn.on('click', function (event) {
     icon.on('click', function (event) {
       STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
       deleteCategory()
-        .then(renderState)
+        .then(refreshState)
     })
   }
 
@@ -630,7 +640,7 @@ editCategoriesBtn.on('click', function (event) {
       STORE.SubCategoryToDelete = event.currentTarget.getAttribute("data-subcategory");
       STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.getAttribute("data-valueSubCategory")).toFixed(2);
       deleteSubCategory()
-        .then(renderState)
+        .then(refreshState)
     })
   }
 
@@ -639,18 +649,18 @@ editCategoriesBtn.on('click', function (event) {
 // RENDER STATE
 
 function renderState() {
-  retrieveMontlyBudgetData()
-    .then(displayBudgetValue)
-    .then(displayCurrentMonth)
-    .then(renderTable)
-    .then(addListenersOnSubcategoryButtons)
-    .then(renderCategories)
-    .then(addAllSubcategoriesToStore)
-    .then(renderSubCategoriesBudgetForm)
-    .then(displayAllTransactions);
+  displayBudgetValue();
+  displayCurrentMonth();
+  renderTable();
+  addListenersOnSubcategoryButtons();
+  renderCategories();
+  addAllSubcategoriesToStore();
+  renderSubCategoriesBudgetForm()
+  displayAllTransactions();
+  addListenersDeleteTransaction();
 }
 
 window.on('load', function (event) {
   setCurrentMonthToStore();
-  renderState();
+  refreshState();
 })

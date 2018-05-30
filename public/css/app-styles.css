@@ -145,6 +145,10 @@ nav {
   justify-content: space-between
 }
 
+.remove-transaction {
+  font-size: 1.5rem;
+}
+
 /* TRANSACTIONS */
 
 .delete-btn-transaction-td {
