@@ -393,15 +393,13 @@ function addListenersOnSubcategoryButtons() {
 // ADDING EVENT LISTENERS ON DELETE TRANSACTION BTNS
 
 function addListenersDeleteTransaction() {
-
+  console.log('Register Event Handler')
   document.body.addEventListener('click', function (event) {
-
     if (event.target.classList.contains('remove-transaction')) {
 
       STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
       let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
       STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
-
 
 
       let subCat = STORE.allSubcategories.find(subcategory => {
@@ -649,15 +647,15 @@ function renderState() {
   displayBudgetValue();
   displayCurrentMonth();
   renderTable();
-  addListenersOnSubcategoryButtons();
   renderCategories();
   addAllSubcategoriesToStore();
   renderSubCategoriesBudgetForm()
   displayAllTransactions();
-  addListenersDeleteTransaction();
 }
 
 window.on('load', function (event) {
+  addListenersOnSubcategoryButtons();
+  addListenersDeleteTransaction();
   setCurrentMonthToStore();
   refreshState();
 })
