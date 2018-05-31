@@ -393,7 +393,6 @@ function addListenersOnSubcategoryButtons() {
 // ADDING EVENT LISTENERS ON DELETE TRANSACTION BTNS
 
 function addListenersDeleteTransaction() {
-  let btnArr = document.querySelectorAll('.remove-transaction');
 
   document.body.addEventListener('click', function (event) {
 
@@ -413,7 +412,6 @@ function addListenersDeleteTransaction() {
       } else {
         STORE.transactionToBeDeleted.subCategory = subCat._id
       }
-      console.log('click')
       deleteTransaction()
         .then(refreshState)
     }
@@ -424,7 +422,6 @@ function addListenersDeleteTransaction() {
 // REFRESH STATE
 
 function refreshState() {
-  console.log('refresh state')
   return retrieveMontlyBudgetData()
     .then(renderState)
 }

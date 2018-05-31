@@ -52,7 +52,10 @@ router.delete('/:id', (req, res) => {
       _id: req.params.id
     })
     .then(result => {
-      Month.findByIdAndUpdate(req.body.monthId, {
+      return Month.findByIdAndUpdate(req.body.monthId, {
+          $pull: {
+            categories: mongoose.Types.ObjectId(req.params.id)
+          },
           $inc: {
             budget: req.body.value
           }
