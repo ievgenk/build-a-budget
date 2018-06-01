@@ -459,6 +459,12 @@ function refreshState() {
 
 // EVENT LISTENERS -- DOM RENDERING
 
+// Log Out Btn
+
+logOutBtn.on('click', function (event) {
+  localStorage.clear()
+})
+
 //Money Budget Div
 
 moneyBudgetedDiv.on('click', function (event) {

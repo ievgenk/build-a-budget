@@ -25,6 +25,7 @@ const radioPositive = document.querySelector('#positive');
 const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
 const editCategoriesBtn = document.querySelector('.edit-categories');
 const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
+const logOutBtn = document.querySelector('.log-out');
 
 
 
