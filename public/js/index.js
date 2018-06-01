@@ -5,6 +5,7 @@ const serverURL = 'http://127.0.0.1:8080'
 // STATE
 
 const STORE = {
+  activeUserId: localStorage.getItem('userId'),
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   monthlyBudgetData: '',
@@ -92,11 +93,19 @@ function addAllSubcategoriesToStore() {
 // RETRIEVE MONTHLY BUDGET DATA
 
 function retrieveMontlyBudgetData() {
+  console.log('Retrieved Montly Budget Data')
+  if (STORE.activeUserId.length > 1) {
+    console.log('STORE USER ID IS SET')
+  }
   return axios({
       url: `${serverURL}/api/monthlyBudget/${STORE.selectedMonth}`,
-      method: 'get'
+      method: 'get',
+      headers: {
+        'authorization': localStorage.getItem('token')
+      }
     })
     .then(result => {
+      console.log(result)
       STORE.monthlyBudgetData = result.data;
       STORE.categories = result.data.categories;
       STORE.budget = result.data.budget;
@@ -151,6 +160,9 @@ function addMoneyToBudget() {
     method: 'put',
     data: {
       budget: STORE.budget
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 
@@ -204,6 +216,9 @@ function distributeBudgetedMoney() {
       monthId: STORE.monthlyBudgetData._id,
       subCategoryId: subCategoryId,
       value: parseInt(subCategoryBudgetFormValue.value)
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -217,6 +232,9 @@ function addCategory() {
     data: {
       categoryName: categoryNameInput.value,
       monthId: STORE.monthlyBudgetData._id
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -254,6 +272,9 @@ function addATransaction() {
       value: dollarValue,
       description: briefDescription,
       monthId: STORE.monthlyBudgetData._id
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -312,6 +333,9 @@ function saveSubCategoryToDB() {
     data: {
       category: categoryId._id,
       title: STORE.subCategoryToBeAdded
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -343,6 +367,9 @@ function deleteCategory() {
       monthId: STORE.monthlyBudgetData._id,
       value: totalValue,
       subCatArr: arrOfSubCatIds
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -358,6 +385,9 @@ function deleteSubCategory() {
     data: {
       monthID: STORE.monthlyBudgetData._id,
       budgeted: subCategoryToDeleteBudgeted
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }
@@ -372,6 +402,9 @@ function deleteTransaction() {
       monthID: STORE.monthlyBudgetData._id,
       subCategory: STORE.transactionToBeDeleted.subCategory,
       value: parseFloat(STORE.transactionToBeDeleted.value)
+    },
+    headers: {
+      'authorization': localStorage.getItem('token')
     }
   })
 }

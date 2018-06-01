@@ -16,14 +16,7 @@ const userSchema = new Schema({
     required: true,
     min: 5,
     max: 70
-  },
-  monthlyBudget: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Month',
-    autopopulate: {
-      maxDepth: 2
-    }
-  }]
+  }
 
 })
 

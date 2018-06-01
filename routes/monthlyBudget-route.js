@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {
+  checkAuth
+} = require('../middleware/confirm-auth');
 
 router.use(express.json());
 
@@ -13,32 +16,36 @@ const {
 } = require('../models/budget');
 
 
-router.get('/:month', (req, res) => {
+router.get('/:month', checkAuth, (req, res) => {
   Month.findOne({
-      month: req.params.month
+      month: req.params.month,
+      user: req.userId
     })
-    .then(month => {
-      if (!month) {
-        month = new Month({
-            month: parseInt(req.params.month)
+    .then(existingMonth => {
+      if (!existingMonth) {
+        existingMonth = new Month({
+            month: parseInt(req.params.month),
+            user: req.userId
           })
           .save()
       }
-      return month;
+      return existingMonth;
     })
-    .then(month => {
-      res.status(200).json(month);
+    .then(existingMonth => {
+      res.status(200).send(existingMonth)
     })
-    .catch(error => {
-      console.log(error)
+    .catch(err => {
+      res.status(500).send(err)
     })
+
 })
 
 
-router.put('/:month', (req, res) => {
+router.put('/:month', checkAuth, (req, res) => {
 
   Month.findOneAndUpdate({
-      month: parseInt(req.params.month)
+      month: parseInt(req.params.month),
+      user: req.userId
     }, {
       budget: req.body.budget
     }, {
@@ -53,9 +60,12 @@ router.put('/:month', (req, res) => {
 
 })
 
-router.put('/', (req, res) => {
+router.put('/', checkAuth, (req, res) => {
 
-  Month.findByIdAndUpdate(req.body.monthId, {
+  Month.findOneAndUpdate({
+      _id: req.body.monthId,
+      user: req.userId
+    }, {
       $inc: {
         budget: -(req.body.value)
       }

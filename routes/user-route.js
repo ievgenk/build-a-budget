@@ -95,9 +95,13 @@ router.post('/login', (req, res) => {
             }
           )
           return res.status(200).json({
-            message: 'Auth Succesfull',
-            token
+            redirect: '/app-ui.html',
+            token,
+            user: user._id
           })
+
+
+
         }
         return res.status(401).json({
           message: 'Auth Failed'

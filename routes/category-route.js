@@ -15,7 +15,7 @@ const {
   Month
 } = require('../models/budget');
 
-router.get('/', checkAuth, (req, res) => {
+router.get('/', (req, res) => {
   Category.find({})
     .then(categories => {
       res.status(200).json(categories);
@@ -25,7 +25,7 @@ router.get('/', checkAuth, (req, res) => {
     })
 });
 
-router.post('/', checkAuth, (req, res) => {
+router.post('/', (req, res) => {
   let categoryName = req.body.categoryName;
   let monthId = req.body.monthId;
   new Category({
@@ -49,7 +49,7 @@ router.post('/', checkAuth, (req, res) => {
 })
 
 
-router.delete('/:id', checkAuth, (req, res) => {
+router.delete('/:id', (req, res) => {
   Category.findOneAndRemove({
       _id: req.params.id
     })
