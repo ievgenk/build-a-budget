@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {
+  checkAuth
+} = require('../middleware/confirm-auth');
 
 router.use(express.json());
 
 const {
   User,
-  MonthlyBudget,
   Transaction,
   Category,
   Subcategory,
   Month
 } = require('../models/budget');
 
-router.get('/', (req, res) => {
+router.get('/', checkAuth, (req, res) => {
   Category.find({})
     .then(categories => {
       res.status(200).json(categories);
@@ -23,7 +25,7 @@ router.get('/', (req, res) => {
     })
 });
 
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
   let categoryName = req.body.categoryName;
   let monthId = req.body.monthId;
   new Category({
@@ -47,7 +49,7 @@ router.post('/', (req, res) => {
 })
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', checkAuth, (req, res) => {
   Category.findOneAndRemove({
       _id: req.params.id
     })

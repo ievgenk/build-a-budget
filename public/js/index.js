@@ -647,6 +647,7 @@ function renderState() {
   displayBudgetValue();
   displayCurrentMonth();
   renderTable();
+  addListenersOnSubcategoryButtons();
   renderCategories();
   addAllSubcategoriesToStore();
   renderSubCategoriesBudgetForm()
@@ -654,7 +655,6 @@ function renderState() {
 }
 
 window.on('load', function (event) {
-  addListenersOnSubcategoryButtons();
   addListenersDeleteTransaction();
   setCurrentMonthToStore();
   refreshState();

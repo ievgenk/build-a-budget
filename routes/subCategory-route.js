@@ -6,7 +6,6 @@ router.use(express.json());
 
 const {
   User,
-  MonthlyBudget,
   Transaction,
   Category,
   Subcategory,

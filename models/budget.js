@@ -4,11 +4,27 @@ const Schema = mongoose.Schema;
 const autopopulate = require('mongoose-autopopulate');
 
 const userSchema = new Schema({
-  userName: {
+  email: {
     type: String,
     min: 5,
-    max: 20
-  }
+    max: 20,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true,
+    min: 5,
+    max: 70
+  },
+  monthlyBudget: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Month',
+    autopopulate: {
+      maxDepth: 2
+    }
+  }]
+
 })
 
 let User = mongoose.model('User', userSchema);
@@ -17,7 +33,9 @@ const subcategorySchema = new Schema({
   category: {
     type: Schema.Types.ObjectId,
     ref: 'Category',
-    autopopulate: true
+    autopopulate: {
+      maxDepth: 2
+    }
   },
   title: {
     type: String,
@@ -41,23 +59,22 @@ let Subcategory = mongoose.model('Subcategory', subcategorySchema)
 
 
 const categoriesSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    autopopulate: true
-  },
   name: {
     type: String
   },
   listOfSubCategories: [{
     type: Schema.Types.ObjectId,
     ref: 'Subcategory',
-    autopopulate: true
+    autopopulate: {
+      maxDepth: 2
+    }
   }],
   month: {
     type: Schema.Types.ObjectId,
     ref: 'Month',
-    autopopulate: true
+    autopopulate: {
+      maxDepth: 2
+    }
   }
 }).plugin(autopopulate)
 
@@ -79,7 +96,10 @@ const transactionSchema = new Schema({
   description: String,
   month: {
     type: Schema.Types.ObjectId,
-    ref: 'Month'
+    ref: 'Month',
+    autopopulate: {
+      maxDepth: 2
+    }
   }
 }).plugin(autopopulate)
 
@@ -87,6 +107,13 @@ let Transaction = mongoose.model('Transaction', transactionSchema);
 
 
 const MonthSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: {
+      maxDepth: 2
+    }
+  },
   month: {
     type: Number,
     required: true
@@ -99,32 +126,20 @@ const MonthSchema = new Schema({
   transactions: [{
     type: Schema.Types.ObjectId,
     ref: 'Transaction',
-    autopopulate: true
+    autopopulate: {
+      maxDepth: 2
+    }
   }],
   categories: [{
     type: Schema.Types.ObjectId,
     ref: 'Category',
-    autopopulate: true
+    autopopulate: {
+      maxDepth: 2
+    }
   }]
 }).plugin(autopopulate)
 
 let Month = mongoose.model('Month', MonthSchema);
-
-
-const monthlyBudgetSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    autopopulate: true
-  },
-  month: {
-    type: Schema.Types.ObjectId,
-    ref: 'Month'
-  }
-}).plugin(autopopulate)
-
-
-let MonthlyBudget = mongoose.model('MonthlyBudget', monthlyBudgetSchema);
 
 
 
@@ -133,7 +148,6 @@ let MonthlyBudget = mongoose.model('MonthlyBudget', monthlyBudgetSchema);
 
 module.exports = {
   User,
-  MonthlyBudget,
   Transaction,
   Category,
   Subcategory,
