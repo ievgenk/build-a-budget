@@ -90,7 +90,7 @@ router.post('/login', (req, res) => {
               email: user.email,
               userId: user._id
             },
-            secretJWT, {
+            process.env.JWT_SECRET, {
               expiresIn: "1h"
             }
           )

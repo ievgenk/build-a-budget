@@ -93,10 +93,7 @@ function addAllSubcategoriesToStore() {
 // RETRIEVE MONTHLY BUDGET DATA
 
 function retrieveMontlyBudgetData() {
-  console.log('Retrieved Montly Budget Data')
-  if (STORE.activeUserId.length > 1) {
-    console.log('STORE USER ID IS SET')
-  }
+  if (STORE.activeUserId.length > 1) {}
   return axios({
       url: `${serverURL}/api/monthlyBudget/${STORE.selectedMonth}`,
       method: 'get',
@@ -105,7 +102,6 @@ function retrieveMontlyBudgetData() {
       }
     })
     .then(result => {
-      console.log(result)
       STORE.monthlyBudgetData = result.data;
       STORE.categories = result.data.categories;
       STORE.budget = result.data.budget;
@@ -358,7 +354,7 @@ function deleteCategory() {
     return subCategory._id
   })
 
-  console.log(totalValue)
+
 
   return axios({
     url: `${serverURL}/api/categories/${categoryId}`,
@@ -426,7 +422,6 @@ function addListenersOnSubcategoryButtons() {
 // ADDING EVENT LISTENERS ON DELETE TRANSACTION BTNS
 
 function addListenersDeleteTransaction() {
-  console.log('Register Event Handler')
   document.body.addEventListener('click', function (event) {
     if (event.target.classList.contains('remove-transaction')) {
 
@@ -581,7 +576,6 @@ categoryForm.on('submit', function (event) {
       if (response.status === 200) {
         alert('Category added to DB succesfully')
       }
-      console.log(response)
     })
     .then(refreshState)
     .catch(err => {

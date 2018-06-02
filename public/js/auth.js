@@ -39,7 +39,6 @@ window.on('load', function (event) {
       .then(user => {
         localStorage.setItem('token', user.data.token)
         localStorage.setItem('userId', user.data.user)
-        console.log(user)
         if (user) {
           document.location.href = user.data.redirect
         }
@@ -54,7 +53,6 @@ window.on('load', function (event) {
     event.preventDefault();
     signupUser()
       .then(newUser => {
-        console.log(newUser)
         signupFormEmail.value = ''
         signupFormPassword.value = ''
       })
