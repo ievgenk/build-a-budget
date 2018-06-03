@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 router.use(express.json());
 
@@ -14,6 +15,16 @@ const {
 
 
 router.post('/', (req, res) => {
+
+  if (validator.isAlphanumeric(req.body.title) || validator.isLength(req.body.title, {
+      min: 1,
+      max: 35
+    }) === false) {
+    res.status(400).json({
+      message: 'Subcategory name should have atleast 1 character and maximum 35'
+    })
+  }
+
   new Subcategory({
       category: req.body.category,
       title: req.body.title

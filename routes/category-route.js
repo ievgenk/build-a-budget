@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const {
   checkAuth
 } = require('../middleware/confirm-auth');
-
+const validator = require('validator');
 router.use(express.json());
 
 const {
@@ -26,6 +26,16 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+
+  if (validator.isAlphanumeric(req.body.categoryName) || validator.isLength(req.body.categoryName, {
+      min: 1,
+      max: 35
+    }) === false) {
+    res.status(400).json({
+      message: 'Category name should have atleast 1 character and maximum 35'
+    })
+  }
+
   let categoryName = req.body.categoryName;
   let monthId = req.body.monthId;
   new Category({

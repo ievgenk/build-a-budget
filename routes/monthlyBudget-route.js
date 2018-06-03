@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const {
   checkAuth
 } = require('../middleware/confirm-auth');
+const validator = require('validator');
 
 router.use(express.json());
 
@@ -42,6 +43,11 @@ router.get('/:month', checkAuth, (req, res) => {
 
 
 router.put('/:month', checkAuth, (req, res) => {
+  if (typeof (req.body.budget) !== 'number') {
+    res.status(400).json({
+      message: "Please only input numbers"
+    })
+  }
 
   Month.findOneAndUpdate({
       month: parseInt(req.params.month),
