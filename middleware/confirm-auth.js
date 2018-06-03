@@ -1,7 +1,4 @@
 const jwt = require('jsonwebtoken');
-const {
-  secretJWT
-} = require('../config');
 
 function checkAuth(req, res, next) {
   try {

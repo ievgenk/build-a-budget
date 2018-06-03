@@ -28,8 +28,8 @@ router.post('/', (req, res) => {
         res.status(200).json(subCategory);
       });
     })
-    .catch(err => {
-      console.log(err);
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 
@@ -47,8 +47,8 @@ router.delete('/:id', (req, res) => {
           res.status(202).end();
         })
     })
-    .catch(err => {
-      console.log(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 

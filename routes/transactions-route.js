@@ -40,8 +40,8 @@ router.post('/', (req, res) => {
             })
         })
     })
-    .catch(err => {
-      throw new Error(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 
@@ -81,8 +81,8 @@ router.delete('/:id', (req, res) => {
           })
       }
     })
-    .catch(err => {
-      res.status(500).send(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 

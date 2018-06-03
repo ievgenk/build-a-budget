@@ -4,9 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const {
-  secretJWT
-} = require('../config');
+
 
 router.use(express.json());
 
@@ -58,7 +56,6 @@ router.post('/signup', (req, res) => {
                 })
               })
               .catch(error => {
-                console.log(error)
                 res.status(500).send(error)
               })
 

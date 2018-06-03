@@ -54,8 +54,8 @@ router.put('/:month', checkAuth, (req, res) => {
     .then(updatedBudget => {
       res.status(200).json(updatedBudget);
     })
-    .catch(err => {
-      console.log(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 
 })
@@ -80,8 +80,9 @@ router.put('/', checkAuth, (req, res) => {
           res.status(204).end()
         })
     })
-    .catch(err => console.log(err))
-
+    .catch(error => {
+      res.status(500).send(error)
+    })
 })
 
 

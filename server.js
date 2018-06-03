@@ -3,7 +3,6 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const config = require('./config');
 const mongoose = require('mongoose');
 const {
   User,
@@ -52,8 +51,8 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json(err).end();
 })
 
-app.listen(config.port, () => {
-  console.log(`Listening on port ${config.port}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Listening on port ${process.env.PORT}`)
 })
 
 

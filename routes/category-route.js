@@ -20,8 +20,8 @@ router.get('/', (req, res) => {
     .then(categories => {
       res.status(200).json(categories);
     })
-    .catch(err => {
-      console.log(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 });
 
@@ -39,12 +39,13 @@ router.post('/', (req, res) => {
             categories: category
           }
         })
+        .exec()
         .then(month => {
           res.status(200).json(month)
         })
     })
-    .catch(err => {
-      res.status(err.status || 500).json(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 
@@ -73,8 +74,8 @@ router.delete('/:id', (req, res) => {
             })
         })
     })
-    .catch(err => {
-      console.log(err)
+    .catch(error => {
+      res.status(500).send(error)
     })
 })
 
