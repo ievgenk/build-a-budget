@@ -22,6 +22,9 @@ chai.use(chaiHttp);
 describe('REST API ENDPOITNS', function () {
 
   let token;
+  let month;
+  let subCat;
+  let cat;
 
   beforeEach(async function () {
     let newUser = await chai.request(app)
@@ -38,6 +41,25 @@ describe('REST API ENDPOITNS', function () {
         password: 'testDb'
       })
     token = userToken.body.token
+
+
+    month = await new Month({
+      user: mongoose.Types.ObjectId(userToken.body.user),
+      month: 1,
+      budget: 100
+    })
+
+    subCat = await new Subcategory({
+      title: 'Superstore',
+      budgeted: 0,
+      spent: 0
+    })
+
+    cat = await new Category({
+      name: 'Bills',
+      month: mongoose.Types.ObjectId(month._id)
+    })
+
   })
 
   before(async function () {
@@ -59,7 +81,6 @@ describe('REST API ENDPOITNS', function () {
   })
 
   after(async function () {
-
     mongoose.disconnect();
   })
 
@@ -78,76 +99,128 @@ describe('REST API ENDPOITNS', function () {
         })
     })
   })
+
   describe('CATEGORY ROUTE ENDPOINTS', function () {
 
-    it('Should return categories JSON', function () {
-      return chai.request(app)
-        .get('/api/categories')
-        .then(result => {
-          expect(result).to.have.status(200);
-          expect(result).to.be.json;
-          expect(result.body).to.be.a('array');
+    it('Should create a new category', async function () {
+      let category = await chai.request(app)
+        .post('/api/categories')
+        .set('authorization', token)
+        .send({
+          categoryName: 'Groceries',
+          monthId: month._id
         })
-        .catch(err => {
-          // console.log(err)
-        })
+
+      let findCategory = await Category.findOne({
+        name: "Groceries"
+      })
+      expect(findCategory.name).to.equal('Groceries')
+      expect(category).to.have.status(200)
     })
 
-    let testCategory;
-
-    it('Should create a new category', async function () {
-      let month = await new Month({
-          month: 7
-        })
-        .save()
-      return chai.request(app)
+    it('SHOULD NOT CREATE A NEW CATEGORY DUE TO ABSENSE OF VALID CATEGORY NAME', async function () {
+      let category = await chai.request(app)
         .post('/api/categories')
+        .set('authorization', token)
         .send({
-          'categoryName': 'anotherTest',
-          'monthId': month._id
+          categoryName: '',
+          monthId: month._id
         })
-        .then(result => {
-          testCategory = result.body
-          expect(result).to.have.status(200);
-          expect(result).to.be.json;
-          expect(mongoose.Types.ObjectId(result.body._id)).to.deep.equal(mongoose.Types.ObjectId(month._id));
-          expect(result.body.month).to.equal(month.month)
+      expect(category.body.message).to.equal('Category name should have atleast 1 character and maximum 35')
+      expect(category).to.have.status(400)
+    })
+
+    it('SHOULD NOT CREATE A NEW CATEGORY DUE TO ABSENSE OF A CATEGORY NAME', async function () {
+      let category = await chai.request(app)
+        .post('/api/categories')
+        .set('authorization', token)
+        .send({
+          monthId: month._id
         })
-      // .catch(err => console.log(err))
+      expect(category).to.have.status(500)
     })
 
     it('Should delete an existing category', async function () {
-      console.log(mongoose.connection.db)
-      let month = await new Month({
-          month: 8
-        })
-        .save()
-      let category = await new Category({
-          month: mongoose.Types.ObjectId(month._id),
-          name: 'Delete Test Category'
-        })
-        .save()
 
-      return chai.request(app)
-        .delete(`/api/categories/${category._id}`)
-        .then(result => {
-          expect(result).to.have.status(202)
-        })
-      // .catch(err => console.log(err))
+      let category = await chai.request(app)
+        .delete(`/api/categories/${cat._id}`)
+
+      let deletedCat = await Category.find({
+        name: 'Bills'
+      })
+
+      expect(category).to.have.status(202)
     })
 
   })
 
   describe('MONTLY-BUDGET ROUTE ENDPOINTS', function () {
 
-    it('GET MONTLY BUDGET', async function () {
-      console.log(token)
+    it('SHOULD GET MONTLY BUDGET', async function () {
       let monthlyBudget = await chai.request(app)
         .get('/api/monthlyBudget/1')
         .set('authorization', token)
       expect(monthlyBudget).to.have.status(200);
-      expect(monthlyBudget.body).to.have.keys('month', 'budget', 'transactions', 'categories')
+      expect(monthlyBudget.body).to.contain.keys('month', 'budget', 'transactions', 'categories')
     })
-  })
 
+    it('SHOULD FAIL TO GET MONTHLY BUDGET', async function () {
+      try {
+        let monthlyBudget = await chai.request(app)
+          .get('/api/monthlyBudget/a')
+          .set('authorization', token)
+        expect(monthlyBudget).to.have.status(500)
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
+    it('SHOULD FAIL TO MODIFY EXISTING MONTH\'S BUDGET DUE TO SENDING NOT A NUMBER', async function () {
+      try {
+        let monthlyBudget = await chai.request(app)
+          .put('/api/monthlyBudget/1')
+          .set('authorization', token)
+          .send({
+            budget: 'not a number'
+          })
+        expect(monthlyBudget).to.have.status(400)
+        expect(monthlyBudget.body.message).to.equal('Please only input numbers')
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
+    it('SHOULD UPDATE THE BUDGET AMOUNT OF AN EXISTING MONTH', async function () {
+      let monthlyBudget = await chai.request(app)
+        .put('/api/monthlyBudget/1')
+        .set('authorization', token)
+        .send({
+          budget: 200
+        })
+      expect(monthlyBudget).to.have.status(200)
+      expect(monthlyBudget.body.month).to.equal(1)
+      expect(monthlyBudget.body.budget).to.equal(200)
+    })
+
+    it('SHOULD DEDUCT PROVIDED AMOUNT FROM MONTLY BUDGET AND MOVE IT TO SELECTED SUBCATEGORY', async function () {
+      let monthlyBudget = await chai.request(app)
+        .put('/api/monthlyBudget')
+        .set('authorization', token)
+        .send({
+          monthId: month._id,
+          value: 10,
+          subCategoryId: subCat._id
+        })
+      expect(monthlyBudget).to.have.status(204)
+    })
+
+    it('SHOULD FAIL TO DEDUCT PROVIDED AMOUNT FROM MONTLY BUDGET AND MOVE IT TO SELECTED SUBCATEGORY', async function () {
+      let monthlyBudget = await chai.request(app)
+        .put('/api/monthlyBudget')
+        .set('authorization', token)
+      expect(monthlyBudget).to.have.status(500)
+    })
+
+
+  })
 })

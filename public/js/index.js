@@ -60,8 +60,8 @@ function renderTable() {
     <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">Category - ${categoryObj.name}
     <i class="far fa-plus-square add-subCategory-btn hidden"></i>
     </th>
-    <th>Budgeted</th>
-    <th class="th-delete">Spent
+    <th>Money Budgeted</th>
+    <th class="th-delete">Money Spent
     <span class="remove-icon"> <i class="far fa-minus-square hidden"></i></span>
     </th>
   </tr>
@@ -73,7 +73,7 @@ function renderTable() {
     <td>${subcategory.title}</td>
     <td>${parseFloat(subcategory.budgeted).toFixed(2)}</td>
     <td class="remove-subcategory-td">
-    ${parseFloat(subcategory.spent).toFixed(2)* -1}
+    ${parseFloat(subcategory.spent).toFixed(2)}
     <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}" data-valueSubCategory="${subcategory.budgeted}" data-transaction-vale>
     <i class="far fa-minus-square hidden"></i>
     </span>
@@ -160,7 +160,7 @@ function displayCurrentMonth() {
 }
 
 function displayBudgetValue() {
-  budgetedMoneyValue.innerHTML = `${parseFloat(STORE.budget).toFixed(2)}$`
+  budgetedMoneyValue.innerHTML = `<p>Your Budget:</p>$${parseFloat(STORE.budget).toFixed(2)}`
 }
 
 

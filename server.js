@@ -36,6 +36,7 @@ mongoose.connect('mongodb://localhost:27017/BuildABudget')
 
 app.use(express.static('public'));
 app.use(cors());
+app.use(express.json())
 app.use('/api/user', userRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/subcategories', subCategoryRoute);

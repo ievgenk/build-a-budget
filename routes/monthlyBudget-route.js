@@ -44,7 +44,7 @@ router.get('/:month', checkAuth, (req, res) => {
 
 router.put('/:month', checkAuth, (req, res) => {
   if (typeof (req.body.budget) !== 'number') {
-    res.status(400).json({
+    return res.status(400).json({
       message: "Please only input numbers"
     })
   }
