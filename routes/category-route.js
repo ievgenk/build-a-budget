@@ -15,19 +15,9 @@ const {
   Month
 } = require('../models/budget');
 
-router.get('/', (req, res) => {
-  Category.find({})
-    .then(categories => {
-      res.status(200).json(categories);
-    })
-    .catch(error => {
-      res.status(500).send(error)
-    })
-});
-
 router.post('/', (req, res) => {
 
-  if (validator.isAlphanumeric(req.body.categoryName) || validator.isLength(req.body.categoryName, {
+  if (validator.isLength(req.body.categoryName, {
       min: 1,
       max: 35
     }) === false) {

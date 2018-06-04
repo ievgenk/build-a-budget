@@ -16,7 +16,7 @@ const {
 
 router.post('/', (req, res) => {
 
-  if (validator.isAlphanumeric(req.body.title) || validator.isLength(req.body.title, {
+  if (validator.isLength(req.body.title, {
       min: 1,
       max: 35
     }) === false) {

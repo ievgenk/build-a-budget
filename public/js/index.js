@@ -1,6 +1,23 @@
 const serverURL = 'http://127.0.0.1:8080'
 
-
+// TOATSTR
+toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-top-center",
+  "preventDuplicates": true,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "2000",
+  "timeOut": "2000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
 
 // STATE
 
@@ -40,7 +57,7 @@ function renderTable() {
     let categoryHtml =
       `<thead>
   <tr>
-    <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">${categoryObj.name}
+    <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">Category - ${categoryObj.name}
     <i class="far fa-plus-square add-subCategory-btn hidden"></i>
     </th>
     <th>Budgeted</th>
@@ -289,14 +306,14 @@ function displayAllTransactions() {
   let transactionProperties = Object.keys(transactionArr[0]);
   transactionsHTML += `<thead>
   <tr>
-    <th>${transactionProperties[1]}
+    <th>Category
     </th>
-    <th>${transactionProperties[2]}</th>
+    <th>Subcategory</th>
     <th>
-    ${transactionProperties[3]}
+    Value
     </th>
     <th>
-    ${transactionProperties[4]}
+    Description
     </th>
   </tr>
 </thead>`
@@ -477,6 +494,12 @@ closeBtnBudgetMoney.on('click', function (event) {
 addSubcategoryForm.on('submit', function (event) {
   event.preventDefault();
   saveSubCategoryToDB()
+    .then(result => {
+      if (result.status === 200) {
+        addSubcategoryDiv.classList.toggle('hidden');
+        toastr.success('New subcategory was successfully created')
+      }
+    })
     .then(refreshState)
 })
 
@@ -574,11 +597,14 @@ categoryForm.on('submit', function (event) {
   event.preventDefault();
   addCategory().then(response => {
       if (response.status === 200) {
-        alert('Category added to DB succesfully')
+        toastr.success('New category was successfully added you your budget.')
+        categoryFormDiv.classList.toggle('hidden')
+        categoryNameInput.value = ''
       }
     })
     .then(refreshState)
     .catch(err => {
+      toastr.error('Category was not added to your budget.')
       console.log(err)
     })
 })
@@ -589,7 +615,14 @@ allocateBudgetedMoneyForm.on('submit', function (event) {
   event.preventDefault();
 
   distributeBudgetedMoney()
-    .then(alert('Succesfull Moeny Re-distribution'))
+    .then(result => {
+      console.log(result)
+      if (result.status === 204) {
+        moneyBudgetFormDiv.classList.toggle('hidden')
+        toastr.success('You succesfully re-destributed money.')
+
+      }
+    })
     .then(refreshState)
 })
 
@@ -623,8 +656,16 @@ addMoneyBtn.on('click', function (event) {
 addMoneyForm.on('submit', function (event) {
   event.preventDefault();
   addMoneyToBudget()
-    .then(refreshState).then(alert('Succesfully added money to budget'));
-
+    .then(result => {
+      if (result.status = 200) {
+        toastr.success('Money was successfully added to your budget.')
+      }
+    })
+    .then(refreshState)
+    .then(() => {
+      moneyValueInput.value = ''
+      addMoneyDiv.classList.toggle('hidden')
+    });
 })
 
 //ADD TRANSACTION FORM
@@ -633,8 +674,10 @@ addTransactionForm.on('submit', function (event) {
   event.preventDefault();
   addATransaction()
     .then(transaction => {
-      alert('Succesfully added transaction!')
-      console.log(transaction)
+      if (transaction.status === 200) {
+        addTransactionFormDiv.classList.toggle('hidden')
+        toastr.success('You have successfully added a new transaction.')
+      }
     })
     .then(refreshState)
 })

@@ -6,6 +6,7 @@ const signupFormEmail = document.querySelector('#emailSignup');
 const signupFormPassword = document.querySelector('#passwordSignup');
 
 
+
 function loginUser() {
   return axios({
     method: 'post',
@@ -39,13 +40,12 @@ window.on('load', function (event) {
       .then(user => {
         localStorage.setItem('token', user.data.token)
         localStorage.setItem('userId', user.data.user)
-        if (user) {
+        if (user.status === 200) {
           document.location.href = user.data.redirect
         }
-
       })
       .catch(error => {
-        console.log(`User could not be logged in. ERROR:${error}`)
+        toastr.error('Ooops something happened, authentication failed.')
       })
   })
 
@@ -53,11 +53,15 @@ window.on('load', function (event) {
     event.preventDefault();
     signupUser()
       .then(newUser => {
+        console.log(newUser)
+        if (newUser.status === 201) {
+          toastr.success('You have successfully signed-up.')
+        }
         signupFormEmail.value = ''
         signupFormPassword.value = ''
       })
       .catch(error => {
-        console.log(`User could not be created. ERROR: ${error}`)
+        toastr.error('Ooops something happened, we could not create this user.')
       })
   })
 })
