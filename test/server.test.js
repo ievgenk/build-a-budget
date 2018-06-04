@@ -63,7 +63,7 @@ describe('REST API ENDPOITNS', function () {
   })
 
   before(async function () {
-    await mongoose.connect('mongodb://localhost:27017/BuildABudgetTest')
+    await mongoose.connect('mongodb://sandrael:testdatabase1@ds235609.mlab.com:35609/build-a-budge-test')
 
   })
 
@@ -144,11 +144,17 @@ describe('REST API ENDPOITNS', function () {
 
       let category = await chai.request(app)
         .delete(`/api/categories/${cat._id}`)
+        .set('authorization', token)
+        .send({
+          monthId: month._id,
+          value: 0
+        })
 
       let deletedCat = await Category.find({
         name: 'Bills'
       })
-
+      expect(deletedCat).to.be.a('array')
+      expect(deletedCat).to.have.length(0)
       expect(category).to.have.status(202)
     })
 
@@ -220,7 +226,7 @@ describe('REST API ENDPOITNS', function () {
         .set('authorization', token)
       expect(monthlyBudget).to.have.status(500)
     })
-
-
   })
+
+
 })

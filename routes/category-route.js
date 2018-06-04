@@ -17,7 +17,7 @@ const {
 
 
 
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
 
   if (validator.isLength(req.body.categoryName, {
       min: 1,
@@ -52,7 +52,7 @@ router.post('/', (req, res) => {
 })
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', checkAuth, (req, res) => {
   Category.findOneAndRemove({
       _id: req.params.id
     })
