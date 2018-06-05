@@ -20,6 +20,7 @@
   "homepage": "https://github.com/ievgenk/build-a-budget#readme",
   "dependencies": {
     "bcrypt": "^2.0.1",
+    "chaid": "^1.0.2",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.2",

@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
       min: 1,
       max: 35
     }) === false) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Subcategory name should have atleast 1 character and maximum 35'
     })
   }

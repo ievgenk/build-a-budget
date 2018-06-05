@@ -49,8 +49,6 @@ router.post('/signup', (req, res) => {
               })
               .save()
               .then(newUser => {
-
-                console.log(newUser)
                 res.status(201).json({
                   message: 'User Created'
                 })
@@ -121,7 +119,6 @@ router.delete('/:userId', (req, res) => {
       })
     })
     .catch(error => {
-      console.log(error)
       res.status(500).send(error)
     })
 })
