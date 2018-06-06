@@ -340,6 +340,25 @@ describe('REST API ENDPOITNS', function () {
       expect(monthlyBudget.body.budget).to.equal(200)
     })
 
+    it('SHOULD FAIL TO UPDATE THE BUDGET AMOUNT OF AN EXISTING MONTH, WHEN MONGOOSE FAILS', async function () {
+      const oldFindAndUpdate = Month.findOneAndUpdate
+      Month.findOneAndUpdate = () => Promise.reject('Deliberate Error')
+      try {
+        let monthlyBudget = await chai.request(app)
+          .put('/api/monthlyBudget/1')
+          .set('authorization', token)
+          .send({
+            budget: 200
+          })
+        expect(monthlyBudget).to.have.status(500)
+      } catch (err) {
+        console.log(err)
+      } finally {
+        Month.findOneAndUpdate = oldFindAndUpdate
+      }
+    })
+
+
     it('SHOULD DEDUCT PROVIDED AMOUNT FROM MONTLY BUDGET AND MOVE IT TO SELECTED SUBCATEGORY', async function () {
       let monthlyBudget = await chai.request(app)
         .put('/api/monthlyBudget')

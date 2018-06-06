@@ -29,6 +29,7 @@ const STORE = {
   allSubcategories: [],
   totalSpentPerCat: [],
   totalSpentPerCatTitles: [],
+  mainAreaMode: 'budget',
   categories: [],
   categoriesTotalSpent: [],
   transactions: [],
@@ -50,6 +51,37 @@ const STORE = {
 // FUNCTIONS
 
 //RENDER MAIN BUDGET TABLE
+
+function renderMainArea() {
+  switch (STORE.mainAreaMode) {
+    case 'budget':
+      {
+        transactionListDiv.classList.add('hidden');
+        doughnutChart.classList.add('hidden');
+        mainTable.classList.remove('hidden');
+        categoriesHeader.classList.remove('hidden');
+        break;
+      }
+    case 'transactions':
+      {
+        transactionListDiv.classList.remove('hidden');
+        doughnutChart.classList.add('hidden');
+        mainTable.classList.add('hidden');
+        categoriesHeader.classList.add('hidden');
+        break;
+      }
+    case 'chart':
+      {
+        transactionListDiv.classList.add('hidden');
+        doughnutChart.classList.remove('hidden');
+        mainTable.classList.add('hidden');
+        categoriesHeader.classList.add('hidden');
+        break;
+      }
+    default:
+      throw new Error(`Invalid main area mode: ${STORE.mainAreaMode}`)
+  }
+}
 
 function renderTable() {
   let categoriesArr = STORE.categories;
@@ -328,7 +360,8 @@ function displayAllTransactions() {
           <td>${transaction.subCategory}</td>
           <td>${transaction.value}</td>
           <td class="delete-btn-transaction-td" data-transactionId="${transaction._id}"data-transactionSubCategory="${transaction.subCategory}" data-transaction-value="${transaction.value}"><span>${transaction.description}</span>
-          <i class="far fa-minus-square remove-transaction"></i></td>
+          <button class="remove-transaction"><i class="far fa-minus-square"></i></button>
+          </td>
         </tr>
         </tbody>`;
   }
@@ -444,7 +477,7 @@ function addListenersOnSubcategoryButtons() {
 function addListenersDeleteTransaction() {
   document.body.addEventListener('click', function (event) {
     if (event.target.classList.contains('remove-transaction')) {
-
+      console.log('DOM is stupid')
       STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
       let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
       STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
@@ -458,6 +491,7 @@ function addListenersDeleteTransaction() {
       } else {
         STORE.transactionToBeDeleted.subCategory = subCat._id
       }
+      console.log('Delete Transaction')
       deleteTransaction()
         .then(refreshState)
     }
@@ -477,16 +511,15 @@ function refreshState() {
 // SPENDING DATA BTN
 
 spendingDataBtn.on('click', function (event) {
-  STORE.totalSpentPerCat = [];
-  STORE.totalSpentPerCatTitles = [];
-  STORE.categoriesTotalSpent = [];
-  mainTable.classList.toggle('hidden')
-  categoriesHeader.classList.toggle('hidden')
-  doughnutChart.classList.toggle('hidden')
-  removeExistingChart();
-  categoriesTotalSpent()
-  drawAChart();
-
+  if (STORE.mainAreaMode === 'chart') {
+    STORE.mainAreaMode = 'budget'
+  } else {
+    STORE.mainAreaMode = 'chart'
+    removeExistingChart();
+    categoriesTotalSpent()
+    drawAChart();
+  }
+  renderMainArea();
 })
 
 // Log Out Btn
@@ -634,7 +667,6 @@ categoryForm.on('submit', function (event) {
         STORE.categoriesTotalSpent = [];
       }
     })
-    .then(categoriesTotalSpent)
     .then(refreshState)
     .catch(err => {
       toastr.error('Category was not added to your budget.')
@@ -668,14 +700,13 @@ addMoneyCloseBtn.on('click', function (event) {
 //VIEW ALL TRANSACTION BTN
 
 viewAllTransactionsBtn.on('click', function (event) {
-  mainDiv.classList.toggle('hidden');
-  if (mainDiv.classList.contains('hidden')) {
-    event.currentTarget.textContent = 'Back To Budget';
+  if (STORE.mainAreaMode === 'transactions') {
+    STORE.mainAreaMode = 'budget'
   } else {
-    event.currentTarget.textContent = 'View All Transactions';
+    STORE.mainAreaMode = 'transactions'
+    displayAllTransactions();
   }
-  displayAllTransactions();
-  transactionListDiv.classList.toggle('hidden');
+  renderMainArea();
 })
 
 //ADD MONEY BTN
@@ -767,6 +798,7 @@ function renderState() {
   addAllSubcategoriesToStore();
   renderSubCategoriesBudgetForm()
   displayAllTransactions();
+  renderMainArea();
 }
 
 window.on('load', function (event) {

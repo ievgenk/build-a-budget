@@ -4,6 +4,12 @@ h2:first-child {
   margin-top: auto;
 }
 
+/* SVG BUTTON OVERRIDE */
+
+button svg {
+  pointer-events: none;
+}
+
 /* MAIN STYLES */
 
 html,

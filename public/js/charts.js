@@ -81,6 +81,9 @@ function drawAChart() {
 }
 
 function removeExistingChart() {
+  STORE.totalSpentPerCat = [];
+  STORE.totalSpentPerCatTitles = [];
+  STORE.categoriesTotalSpent = [];
   if (barSpentChart) {
     barSpentChart.destroy()
   } else {
