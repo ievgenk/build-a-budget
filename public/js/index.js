@@ -27,6 +27,8 @@ const STORE = {
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   monthlyBudgetData: '',
   allSubcategories: [],
+  totalSpentPerCat: [],
+  totalSpentPerCatTitles: [],
   categories: [],
   categoriesTotalSpent: [],
   transactions: [],
@@ -475,11 +477,16 @@ function refreshState() {
 // SPENDING DATA BTN
 
 spendingDataBtn.on('click', function (event) {
-  console.log('Spend $$')
-  categoriesTotalSpent()
+  STORE.totalSpentPerCat = [];
+  STORE.totalSpentPerCatTitles = [];
+  STORE.categoriesTotalSpent = [];
   mainTable.classList.toggle('hidden')
   categoriesHeader.classList.toggle('hidden')
   doughnutChart.classList.toggle('hidden')
+  removeExistingChart();
+  categoriesTotalSpent()
+  drawAChart();
+
 })
 
 // Log Out Btn
@@ -551,7 +558,12 @@ leftArrow.on('click', function (event) {
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
     STORE.allSubcategories = [];
+    STORE.totalSpentPerCat = [];
+    STORE.totalSpentPerCatTitles = [];
     refreshState()
+      .then(removeExistingChart)
+      .then(categoriesTotalSpent)
+      .then(drawAChart)
   } else {
     return;
   }
@@ -566,7 +578,13 @@ rightArrow.on('click', function (event) {;
     STORE.inputTransactionForm.selectedCategory = '';
     formSubCategoryDropDown.value = STORE.inputTransactionForm.selectedSubCategory;
     STORE.allSubcategories = [];
+    STORE.totalSpentPerCat = [];
+    STORE.totalSpentPerCatTitles = [];
     refreshState()
+      .then(removeExistingChart)
+      .then(categoriesTotalSpent)
+      .then(drawAChart)
+
   } else {
     return;
   }
@@ -611,8 +629,12 @@ categoryForm.on('submit', function (event) {
         toastr.success('New category was successfully added you your budget.')
         categoryFormDiv.classList.toggle('hidden')
         categoryNameInput.value = ''
+        STORE.totalSpentPerCat = [];
+        STORE.totalSpentPerCatTitles = [];
+        STORE.categoriesTotalSpent = [];
       }
     })
+    .then(categoriesTotalSpent)
     .then(refreshState)
     .catch(err => {
       toastr.error('Category was not added to your budget.')
@@ -686,10 +708,14 @@ addTransactionForm.on('submit', function (event) {
   addATransaction()
     .then(transaction => {
       if (transaction.status === 200) {
+        STORE.totalSpentPerCat = [];
+        STORE.totalSpentPerCatTitles = [];
+        STORE.categoriesTotalSpent = [];
         addTransactionFormDiv.classList.toggle('hidden')
         toastr.success('You have successfully added a new transaction.')
       }
     })
+    .then(categoriesTotalSpent)
     .then(refreshState)
 })
 

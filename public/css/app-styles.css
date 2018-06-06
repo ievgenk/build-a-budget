@@ -186,10 +186,7 @@ i {
   align-items: center;
 }
 
-#doughnut-chart {
-  max-height: 70%;
-  max-width: 60%;
-}
+#doughnut-chart {}
 
 /* Footer */
 

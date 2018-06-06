@@ -52,5 +52,5 @@ const allocateBudgetedMoneyForm = document.querySelector('.budget-money-form');
 
 
 // CHARTS
-
+const chartsDiv = document.querySelector('.charts')
 const doughnutChart = document.querySelector('#doughnut-chart');
