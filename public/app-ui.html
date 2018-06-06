@@ -59,6 +59,7 @@
     <button class="footer-btn income-btn">Input Transaction</button>
     <button class="footer-btn add-category">Add a Category</button>
     <button class="footer-btn view-all-transactions">View all Transactions</button>
+    <button class="spending-data footer-btn">Spending Data</button>
   </footer>
 
   <!-- POP-UP FORMS -->
@@ -157,7 +158,14 @@
     </table>
   </div>
 
+  <!-- CHARTS -->
+
+  <div class="charts">
+    <canvas id="doughnut-chart" class="hidden"></canvas>
+  </div>
+
   <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
@@ -166,6 +174,7 @@
   <script src="./js/bling.js"></script>
   <script src="./js/auth.js"></script>
   <script src="./js/index.js"></script>
+  <script src="./js/charts.js"></script>
 </body>
 
 </html>

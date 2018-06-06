@@ -28,6 +28,7 @@ const STORE = {
   monthlyBudgetData: '',
   allSubcategories: [],
   categories: [],
+  categoriesTotalSpent: [],
   transactions: [],
   transactionToBeDeleted: {},
   CategoryToAdd: '',
@@ -156,7 +157,7 @@ function renderCategories() {
 }
 
 function displayCurrentMonth() {
-  monthDisplay.innerHTML = `<h2>${STORE.allMonths[STORE.selectedMonth]}</h2>`
+  monthDisplay.innerHTML = `<h2>${moment().format("YYYY")}</h2><h2>${STORE.allMonths[STORE.selectedMonth]} </h2>`
 }
 
 function displayBudgetValue() {
@@ -471,6 +472,16 @@ function refreshState() {
 
 // EVENT LISTENERS -- DOM RENDERING
 
+// SPENDING DATA BTN
+
+spendingDataBtn.on('click', function (event) {
+  console.log('Spend $$')
+  categoriesTotalSpent()
+  mainTable.classList.toggle('hidden')
+  categoriesHeader.classList.toggle('hidden')
+  doughnutChart.classList.toggle('hidden')
+})
+
 // Log Out Btn
 
 logOutBtn.on('click', function (event) {
@@ -714,6 +725,8 @@ editCategoriesBtn.on('click', function (event) {
         .then(refreshState)
     })
   }
+
+
 
 })
 

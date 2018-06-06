@@ -174,6 +174,23 @@ i {
   justify-content: space-between;
 }
 
+/* CHARTS */
+
+.charts {
+  grid-column: 1 / -1;
+  grid-row: 2 / 6;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+#doughnut-chart {
+  max-height: 70%;
+  max-width: 60%;
+}
+
 /* Footer */
 
 footer {

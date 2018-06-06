@@ -2,6 +2,7 @@
 const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
 const monthDisplay = document.querySelector('.month');
 const mainTable = document.querySelector('.striped-table');
+const categoriesHeader = document.querySelector('#categories-header')
 // DIVs
 const addTransactionFormDiv = document.querySelector('.add-transaction-div');
 const mainDiv = document.querySelector('main');
@@ -26,6 +27,8 @@ const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
 const editCategoriesBtn = document.querySelector('.edit-categories');
 const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
 const logOutBtn = document.querySelector('.log-out');
+const spendingDataBtn = document.querySelector('.spending-data');
+
 
 
 
@@ -46,3 +49,8 @@ const addSubCategoryInput = document.querySelector('#subCategory-title');
 const subCategoryBudgeFormDrop = document.querySelector('#subcategory-budget-money-dropdown');
 const subCategoryBudgetFormValue = document.querySelector('#subcategory-value');
 const allocateBudgetedMoneyForm = document.querySelector('.budget-money-form');
+
+
+// CHARTS
+
+const doughnutChart = document.querySelector('#doughnut-chart');
