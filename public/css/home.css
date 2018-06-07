@@ -1,3 +1,12 @@
+/* GENERAL STYLES */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   /* Base font size */
   font-size: 10px;
@@ -5,12 +14,18 @@
   --fullGrid: 1 / 1 / -1 / -1;
 }
 
+/* NAVIGATION */
+
+.mdl-layout__header,
+.mdl-layout__drawer-button {
+  color: white;
+}
+
 /* VIDEO */
 
 header {
   /* Create grid spanning viewport width & height */
   grid-column: 1/-1;
-  grid-row: 1/1;
   display: grid;
   grid-template-rows: 100vh;
   overflow: hidden;
@@ -53,21 +68,51 @@ header h1 {
 body {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  /* grid-template-rows: repeat(12, minmax(100px, 1fr)); */
+  grid-auto-rows: max-content;
 }
 
 nav {
   grid-column: 1/-1;
-  grid-row: 1/1;
 }
 
-/* GENERAL STYLES */
+/* GET STARTED */
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+.getStarted-section {
+  grid-column: 1/-1;
+  text-align: center;
+}
+
+.getStarted-section h2 {
+  font-size: 3rem;
+}
+
+.getStarted-section h3 {
+  font-size: 2rem;
+}
+
+/* THREE STEPS */
+
+.three-steps {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.mdl-card {
+  width: 30%;
+  height: 35vh;
+}
+
+.mdl-card__title {
+  border-bottom: 1px lightgrey solid;
+  background: url('https://media.giphy.com/media/PFF62vzZb32jC/giphy.gif') no-repeat center;
+  background-size: cover;
+}
+
+.mdl-card .mdl-card__supporting-text {
+  font-size: 1.8rem
 }
 
 /* form {
