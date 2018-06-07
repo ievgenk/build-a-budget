@@ -191,7 +191,7 @@ function renderCategories() {
 }
 
 function displayCurrentMonth() {
-  monthDisplay.innerHTML = `<h2>${moment().format("YYYY")}</h2><h2>${STORE.allMonths[STORE.selectedMonth]} </h2>`
+  monthDisplay.innerHTML = `<h2>${STORE.allMonths[STORE.selectedMonth]} </h2><h2>${moment().format("YYYY")}</h2>`
 }
 
 function displayBudgetValue() {
@@ -477,7 +477,6 @@ function addListenersOnSubcategoryButtons() {
 function addListenersDeleteTransaction() {
   document.body.addEventListener('click', function (event) {
     if (event.target.classList.contains('remove-transaction')) {
-      console.log('DOM is stupid')
       STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
       let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
       STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
@@ -507,6 +506,9 @@ function refreshState() {
 }
 
 // EVENT LISTENERS -- DOM RENDERING
+
+// FORM CHECKBOXES
+
 
 // SPENDING DATA BTN
 

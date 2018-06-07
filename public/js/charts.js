@@ -30,6 +30,8 @@ function categoriesTotalSpent() {
 function drawAChart() {
   Chart.defaults.global.defaultFontFamily = 'Lato';
   Chart.defaults.global.defaultFontSize = 18;
+  Chart.defaults.global.responsive = true;
+  Chart.defaults.global.maintainAspectRatio = false;
 
   barSpentChart = new Chart(doughnutChart, {
     type: 'bar',
@@ -63,8 +65,7 @@ function drawAChart() {
         position: "top",
         fontSize: 22,
         fontFamily: 'Lato',
-        text: 'Expenditure by Categories',
-        padding: 50
+        text: 'Expenditure by Categories'
       },
       scales: {
         yAxes: [{
@@ -72,6 +73,9 @@ function drawAChart() {
             beginAtZero: true
           }
         }]
+      },
+      legend: {
+        display: false
       }
     }
   })
