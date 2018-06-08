@@ -6,10 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Build-A-Budget</title>
-  <link rel="stylesheet" href="https://cdnjs.com/libraries/10up-sanitize.css">
+  <link rel="stylesheet" href="./css/sanitize.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <link rel="stylesheet" href="./css/home.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
   <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
@@ -23,13 +22,10 @@
     <div class="mdl-layout mdl-js-layout">
       <header class="mdl-layout__header mdl-layout__header--transparent">
         <div class="mdl-layout__header-row">
-          <!-- Title -->
           <span class="mdl-layout-title">Build A Budget</span>
-          <!-- Add spacer, to align navigation to the right -->
           <div class="mdl-layout-spacer"></div>
-          <!-- Navigation -->
           <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#">About</a>
+            <a class="mdl-navigation__link" href="#getStarted">Get Started</a>
             <a class="mdl-navigation__link" href="#">Features</a>
             <a class="mdl-navigation__link" href="">Login / Register</a>
           </nav>
@@ -38,13 +34,11 @@
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Build A Budget</span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="#">About</a>
+          <a class="mdl-navigation__link" href="#getStarted">Get Started</a>
           <a class="mdl-navigation__link" href="#">Features</a>
           <a class="mdl-navigation__link" href="">Login / Register</a>
         </nav>
       </div>
-      <main class="mdl-layout__content">
-      </main>
     </div>
   </nav>
 
@@ -54,14 +48,15 @@
       <source src="./media/video/Boxing-gym.webm" type="video/webm" />
     </video>
     <div class="video-overlay">
-      <h1>You Work Hard to Earn the Money
-        <br>We Can Help You Save It</h1>
+      <h1>You Work Hard to Earn Money
+        <br>We Can Help You Keep More Of It</h1>
 
     </div>
   </header>
 
-  <div class="getStarted-section">
+  <div class="getStarted-section" id="getStarted">
     <h2>Get Started</h2>
+    <b class="division-line"></b>
     <h3>Build A Budget is a simple budgeting application that will help you to keep track of your personal finances.</h3>
     <h3>Follow these three easy stespgs to get going:</h3>
   </div>
@@ -94,39 +89,72 @@
   </div>
 
 
-  <div class="features"></div>
+  <div class="features">
+    <div class="featureCard">
+      <h3>Top Features</h3>
+      <b class="division-line"></b>
+      <ul class="demo-list-icon mdl-list">
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+            <i class="fas fa-calculator mdl-list__item-icon"></i>
+            Create a personal budget plan for each month.
+          </span>
+        </li>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+            <i class="fas fa-pencil-alt mdl-list__item-icon"></i>
+            Keep record of all of your transactions.
+          </span>
+        </li>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+            <i class="fas fa-chart-bar mdl-list__item-icon"></i>
+            Utilize visual representation of your spending via charts.
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
 
+  <div class="login-forms forms">
+    <div class="login-title">
+      <h3 class="login-h3">Login</h3>
+    </div>
+    <div class="register-title">
+      <h3 class="signup-h3">Sign-Up</h3>
+    </div>
+    <form class="login">
+      <div class="mdl-textfield mdl-js-textfield">
+        <label class="mdl-textfield__label" for="email">Enter Email</label>
+        <input class="mdl-textfield__input" type="email" id="email">
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <label class="mdl-textfield__label" for="password">Enter Password</label>
+        <input class="mdl-textfield__input" type="password" id="password">
+      </div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" type="submit">
+        Login
+      </button>
+    </form>
+    <form class="signup">
+      <div class="mdl-textfield mdl-js-textfield">
+        <label class="mdl-textfield__label" for="emailSignup">Enter Email</label>
+        <input class="mdl-textfield__input" type="email" id="emailSignup">
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <label class="mdl-textfield__label" for="passwordSignup">Enter Password</label>
+        <input class="mdl-textfield__input" type="password" id="passwordSignup">
+      </div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" type="submit">
+        Sign-Up
+      </button>
+    </form>
 
-  <main>
-    <!-- <div class="forms">
-      <form class="login">
-        <h1>Login Form</h1>
-        <label for="email">Email:</label>
-        <input type="email" id="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id='password' required>
-        <input type="submit" value="Login">
-      </form>
-
-      <form class="signup">
-        <h1>Signup Form</h1>
-        <label for="emailSignup">Email:</label>
-        <input type="email" id="emailSignup" required>
-        <label for="passwordSignup">Password:</label>
-        <input type="password" id='passwordSignup' required>
-        <input type="submit" value="Signup">
-      </form>
-    </div> -->
-  </main>
-
-
-
-
-
+  </div>
 
 
   <footer>
-
+    <h5>Coded by Evgeny Kasian.</h5>
   </footer>
 
 
@@ -136,6 +164,7 @@
 
   <!-- SCRIPTS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -143,6 +172,7 @@
   <script src="./js/bling.js"></script>
   <script src="./js/auth.js"></script>
   <script src="./js/index.js"></script>
+  <script src="./js/splash.js"></script>
 </body>
 
 </html>
