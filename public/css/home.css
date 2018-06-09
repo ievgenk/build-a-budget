@@ -259,3 +259,43 @@ footer {
   color: white;
   text-align: center;
 }
+
+/* MEDIA QUERY */
+
+@media screen and (max-width: 768px) {
+  .getStarted-section {
+    margin: 0 20px 0 20px;
+  }
+  .three-steps {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .mdl-card {
+    margin: 20px;
+    width: 75%;
+    height: 40%;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .getStarted-section {
+    background-color: #F0F0F0;
+  }
+  .three-steps {
+    background-color: #F0F0F0;
+  }
+  .features {
+    grid-column: 1/-1;
+  }
+  .login-forms {
+    grid-column: 1/-1;
+    border-left: none;
+    padding: 25px 0 50px 0;
+    margin-bottom: 50px;
+  }
+  .login-forms form {
+    margin-top: 50px;
+  }
+}
