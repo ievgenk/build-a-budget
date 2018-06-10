@@ -7,6 +7,31 @@ body {
   padding: 0;
 }
 
+.mdl-layout-title {
+  font-size: 2.7rem;
+}
+
+a {
+  font-size: 1.9rem !important
+}
+
+h1,
+h2,
+.mdl-layout-title,
+a,
+h5 {
+  Font-Family: 'Ruda', Sans-Serif;
+}
+
+h3,
+h4,
+p,
+button,
+input,
+.mdl-card__supporting-text .mdl-list__item {
+  Font-Family: 'Muli', Sans-Serif;
+}
+
 :root {
   /* Base font size */
   font-size: 10px;
@@ -19,6 +44,12 @@ body {
 .mdl-layout__header,
 .mdl-layout__drawer-button {
   color: white;
+}
+
+/* HERO IMAGE */
+
+#hero-image {
+  display: none;
 }
 
 /* VIDEO */
@@ -60,7 +91,7 @@ header h1 {
   align-content: center;
   text-align: center;
   /* Semi-transparent background */
-  background-color: rgba(0, 0, 0, 0.055);
+  background-color: rgba(0, 0, 0, 0.555);
 }
 
 /* GRID */
@@ -184,7 +215,7 @@ nav {
   background-color: white;
 }
 
-.login-forms h3 {
+.login-forms h2 {
   margin: 5px;
 }
 
@@ -195,7 +226,7 @@ nav {
   text-align: center;
 }
 
-.login-title h3 {
+.login-title h2 {
   padding: 10px;
 }
 
@@ -207,7 +238,7 @@ nav {
   display: none !important;
 }
 
-.register-title h3 {
+.register-title h2 {
   padding: 10px;
 }
 
@@ -255,7 +286,7 @@ form button[type=submit] {
 footer {
   background-color: #616161;
   grid-column: 1 / -1;
-  height: 7vh;
+  height: auto;
   color: white;
   text-align: center;
 }
@@ -263,6 +294,26 @@ footer {
 /* MEDIA QUERY */
 
 @media screen and (max-width: 768px) {
+  h2 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-size: 2.5rem;
+  }
+  header h1 {
+    font-size: 3.4rem;
+    margin: 10px;
+    padding: 5px;
+  }
+  .video-bg {
+    display: none;
+  }
+  header {
+    background-image: url('../media/images/img1.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
   .getStarted-section {
     margin: 0 20px 0 20px;
   }

@@ -3,6 +3,7 @@ const budgetedMoneyValue = document.querySelector('.money-budgeted-value');
 const monthDisplay = document.querySelector('.month');
 const mainTable = document.querySelector('.striped-table');
 const categoriesHeader = document.querySelector('#categories-header')
+const loader = document.querySelector('.cssload-thecube');
 // DIVs
 const addTransactionFormDiv = document.querySelector('.add-transaction-div');
 const mainDiv = document.querySelector('main');

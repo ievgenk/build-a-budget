@@ -145,6 +145,12 @@ i {
   display: flex;
   justify-content: space-between;
   margin: 0;
+  padding: 5px;
+}
+
+.remove-icon-subcategory {
+  margin: 0;
+  padding: 5px;
 }
 
 .remove-subcategory-td {
@@ -156,6 +162,13 @@ i {
   grid-column: 1 / -1;
   grid-row: 2 / 6;
   overflow: scroll;
+}
+
+.cssload-thecube {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: center;
 }
 
 .fa-plus-square {

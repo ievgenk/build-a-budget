@@ -22,6 +22,7 @@ toastr.options = {
 // STATE
 
 const STORE = {
+  loader: false,
   activeUserId: localStorage.getItem('userId'),
   selectedMonth: 5,
   allMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -49,6 +50,17 @@ const STORE = {
 
 
 // FUNCTIONS
+
+// SWITCH LOADER
+
+function switchLoader(option) {
+  STORE.loader = option;
+  if (STORE.loader === true) {
+    loader.classList.remove('hidden')
+  } else if (STORE.loader === false) {
+    loader.classList.add('hidden')
+  }
+}
 
 //RENDER MAIN BUDGET TABLE
 
@@ -92,11 +104,11 @@ function renderTable() {
     let categoryHtml =
       `<thead>
   <tr>
-    <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">Category - ${categoryObj.name}
+    <th class="add-subCategory-icon" data-subCategory ="${categoryObj.name}">${categoryObj.name}
     <i class="far fa-plus-square add-subCategory-btn hidden"></i>
     </th>
-    <th>Money Budgeted</th>
-    <th class="th-delete">Money Spent
+    <th>Budgeted</th>
+    <th class="th-delete">Spent
     <span class="remove-icon"> <i class="far fa-minus-square hidden"></i></span>
     </th>
   </tr>
@@ -106,11 +118,12 @@ function renderTable() {
       return `<tbody>
   <tr>
     <td>${subcategory.title}</td>
-    <td>${parseFloat(subcategory.budgeted).toFixed(2)}</td>
-    <td class="remove-subcategory-td">
-    ${parseFloat(subcategory.spent).toFixed(2)}
-    <span class="remove-icon-subcategory"  data-subCategory="${subcategory._id}" data-valueSubCategory="${subcategory.budgeted}" data-transaction-vale>
-    <i class="far fa-minus-square hidden"></i>
+    <td>$ ${parseFloat(subcategory.budgeted).toFixed(2)}</td>
+    <td class="remove-subcategory-td">$
+     ${parseFloat(subcategory.spent).toFixed(2)}
+    <span data-subCategory="${subcategory._id}" data-valueSubCategory="${subcategory.budgeted}" data-transaction-vale>
+    <span class="remove-icon-subcategory"><i class="far fa-minus-square hidden"></i></span>
+
     </span>
     </td>
   </tr>
@@ -360,7 +373,7 @@ function displayAllTransactions() {
           <td>${transaction.subCategory}</td>
           <td>${transaction.value}</td>
           <td class="delete-btn-transaction-td" data-transactionId="${transaction._id}"data-transactionSubCategory="${transaction.subCategory}" data-transaction-value="${transaction.value}"><span>${transaction.description}</span>
-          <button class="remove-transaction"><i class="far fa-minus-square"></i></button>
+         <span class="remove-transaction"><i class="far fa-minus-square"></i></span>
           </td>
         </tr>
         </tbody>`;
@@ -477,6 +490,7 @@ function addListenersOnSubcategoryButtons() {
 function addListenersDeleteTransaction() {
   document.body.addEventListener('click', function (event) {
     if (event.target.classList.contains('remove-transaction')) {
+      console.log('delete trans')
       STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
       let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
       STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
@@ -778,8 +792,8 @@ editCategoriesBtn.on('click', function (event) {
 
   for (let subCatIcon of subCategoryTableRemoveIcons) {
     subCatIcon.on('click', function (event) {
-      STORE.SubCategoryToDelete = event.currentTarget.getAttribute("data-subcategory");
-      STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.getAttribute("data-valueSubCategory")).toFixed(2);
+      STORE.SubCategoryToDelete = event.currentTarget.parentNode.getAttribute("data-subcategory");
+      STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.parentNode.getAttribute("data-valueSubCategory")).toFixed(2);
       deleteSubCategory()
         .then(refreshState)
     })
@@ -792,6 +806,7 @@ editCategoriesBtn.on('click', function (event) {
 // RENDER STATE
 
 function renderState() {
+  switchLoader(true);
   displayBudgetValue();
   displayCurrentMonth();
   renderTable();
@@ -799,8 +814,9 @@ function renderState() {
   renderCategories();
   addAllSubcategoriesToStore();
   renderSubCategoriesBudgetForm()
-  displayAllTransactions();
-  renderMainArea();
+  displayAllTransactions()
+  renderMainArea()
+  switchLoader(false);
 }
 
 window.on('load', function (event) {
