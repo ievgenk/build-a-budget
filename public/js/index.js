@@ -1,4 +1,4 @@
-const serverURL = 'http://127.0.0.1:8080'
+const serverURL = window.location.host.indexOf('127') > -1 ? `http://127.0.0.1:${process.env.PORT}` : 'https://secret-bayou-85773.herokuapp.com/'
 
 // TOATSTR
 toastr.options = {

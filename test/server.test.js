@@ -196,7 +196,6 @@ describe('REST API ENDPOITNS', function () {
 
   before(async function () {
     await mongoose.connect('mongodb://evgenyK:Ben08082016@ds257640.mlab.com:57640/build-a-budget-test')
-
   })
 
   afterEach(async function () {
