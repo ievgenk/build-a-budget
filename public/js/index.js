@@ -68,26 +68,32 @@ function renderMainArea() {
   switch (STORE.mainAreaMode) {
     case 'budget':
       {
+        budgetTableBtn.classList.add('activated-tab');
+        viewAllTransactionsBtn.classList.remove('activated-tab');
+        spendingDataBtn.classList.remove('activated-tab');
         transactionListDiv.classList.add('hidden');
         doughnutChart.classList.add('hidden');
         mainTable.classList.remove('hidden');
-        categoriesHeader.classList.remove('hidden');
         break;
       }
     case 'transactions':
       {
+        budgetTableBtn.classList.remove('activated-tab');
+        viewAllTransactionsBtn.classList.add('activated-tab');
+        spendingDataBtn.classList.remove('activated-tab');
         transactionListDiv.classList.remove('hidden');
         doughnutChart.classList.add('hidden');
         mainTable.classList.add('hidden');
-        categoriesHeader.classList.add('hidden');
         break;
       }
     case 'chart':
       {
+        budgetTableBtn.classList.remove('activated-tab');
+        viewAllTransactionsBtn.classList.remove('activated-tab');
+        spendingDataBtn.classList.add('activated-tab');
         transactionListDiv.classList.add('hidden');
         doughnutChart.classList.remove('hidden');
         mainTable.classList.add('hidden');
-        categoriesHeader.classList.add('hidden');
         break;
       }
     default:
@@ -233,6 +239,10 @@ function addMoneyToBudget() {
 // RENDER SUBCATEGORIES TO INPUT TRANSACTION FORM
 
 function renderSubCategories() {
+  if (STORE.categories.length === 0) {
+    toastr.warning('There are currently no existing categories, cannot input transaction.')
+  }
+
   const category = STORE.categories.find(category => category.name === STORE.inputTransactionForm.selectedCategory);
   const subCategoryList = category.listOfSubCategories;
   formSubCategoryDropDown.innerHTML = '';
@@ -267,7 +277,7 @@ function distributeBudgetedMoney() {
   let subCategoryId = matchingSubCategory._id
 
   if (STORE.budget < parseInt(subCategoryBudgetFormValue.value)) {
-    return alert('Insufficient fund to transfer')
+    return toastr.warning('Insufficient funds to transfer')
   }
 
   return axios({
@@ -475,14 +485,17 @@ function deleteTransaction() {
 // ADDING EVENT LISTENERS ON ADD SUBCATEGORY BUTTONS
 
 function addListenersOnSubcategoryButtons() {
-  let btnArr = document.querySelectorAll('.add-subCategory-icon')
-  for (let i = 0; i < btnArr.length; i++) {
-    btnArr[i].on('click', function (event) {
-      STORE.CategoryToAdd = event.currentTarget.parentNode.firstElementChild.getAttribute("data-subcategory");
+  document.body.addEventListener('click', function (event) {
+
+    if (event.target.classList.contains('add-subCategory-btn')) {
+      event.preventDefault();
+      console.log('clicked on add subctr')
+      STORE.CategoryToAdd = event.target.parentNode.getAttribute("data-subcategory");
       addSubcategoryDiv.classList.toggle('hidden');
-    })
-  }
+    }
+  })
 }
+
 
 
 // ADDING EVENT LISTENERS ON DELETE TRANSACTION BTNS
@@ -564,36 +577,40 @@ addSubcategoryForm.on('submit', function (event) {
     .then(result => {
       if (result.status === 200) {
         addSubcategoryDiv.classList.toggle('hidden');
+        addSubCategoryInput.value = ''
         toastr.success('New subcategory was successfully created')
       }
     })
     .then(refreshState)
 })
 
+// RADIO BTNS
+
+
 
 //ADD INCOME BTN
 
-addIncomeBtn.on('click', function () {
-  renderSubCategories();
+addIncomeBtn.on('click', function (event) {
+  renderSubCategories()
   addTransactionFormDiv.classList.toggle('hidden')
 })
 
 // CLOSE FORM BTN
 
-addSubcategoryCloseBtn.on('click', function () {
+addSubcategoryCloseBtn.on('click', function (event) {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 })
 
 // CLOSE FORM BTN
 
-closeFormBtn.on('click', function () {
+closeFormBtn.on('click', function (event) {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 
 })
 
 // CLOSE FORM BTN
 
-closeBtnCategoryForm.on('click', function () {
+closeBtnCategoryForm.on('click', function (event) {
   event.currentTarget.parentNode.parentNode.classList.toggle('hidden');
 
 })
@@ -725,6 +742,14 @@ viewAllTransactionsBtn.on('click', function (event) {
   renderMainArea();
 })
 
+// BUDGET TABLE BTN
+
+budgetTableBtn.on('click', function (event) {
+  STORE.mainAreaMode = 'budget'
+  renderTable();
+  renderMainArea();
+})
+
 //ADD MONEY BTN
 
 addMoneyBtn.on('click', function (event) {
@@ -788,6 +813,7 @@ editCategoriesBtn.on('click', function (event) {
       deleteCategory()
         .then(refreshState)
     })
+
   }
 
   for (let subCatIcon of subCategoryTableRemoveIcons) {
@@ -810,7 +836,6 @@ function renderState() {
   displayBudgetValue();
   displayCurrentMonth();
   renderTable();
-  addListenersOnSubcategoryButtons();
   renderCategories();
   addAllSubcategoriesToStore();
   renderSubCategoriesBudgetForm()
@@ -820,6 +845,7 @@ function renderState() {
 }
 
 window.on('load', function (event) {
+  addListenersOnSubcategoryButtons();
   addListenersDeleteTransaction();
   setCurrentMonthToStore();
   refreshState();

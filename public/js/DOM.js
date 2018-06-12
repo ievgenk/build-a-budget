@@ -29,6 +29,7 @@ const editCategoriesBtn = document.querySelector('.edit-categories');
 const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
 const logOutBtn = document.querySelector('.log-out');
 const spendingDataBtn = document.querySelector('.spending-data');
+const budgetTableBtn = document.querySelector('.budget-table');
 
 
 
