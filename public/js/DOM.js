@@ -11,25 +11,26 @@ const categoryFormDiv = document.querySelector('.add-category-div');
 const addMoneyDiv = document.querySelector('.add-money-div');
 const transactionListDiv = document.querySelector('.all-transactions-div');
 const addSubcategoryDiv = document.querySelector('.add-subCategory-div');
-const moneyBudgetedDiv = document.querySelector('.money-budgeted');
+const moneyBudgetedBtns = document.querySelectorAll('.money-budgeted');
 const moneyBudgetFormDiv = document.querySelector('.budget-money-form-div');
 // BTNs
-const addIncomeBtn = document.querySelector('.income-btn');
+const addIncomeBtns = document.querySelectorAll('.income-btn');
 const closeFormBtn = document.querySelector('.close-btn');
 const leftArrow = document.querySelector('.left-arrow');
 const rightArrow = document.querySelector('.right-arrow');
-const addCategoryBtn = document.querySelector('.add-category');
-const addMoneyBtn = document.querySelector('.add-money-btn');
+const addCategoryBtns = document.querySelectorAll('.add-category');
+const addMoneyBtns = document.querySelectorAll('.add-money-btn');
 const addMoneyCloseBtn = document.querySelector('#add-money-close-btn');
 const addSubcategoryCloseBtn = document.querySelector('#add-subCategory-close-btn');
 const radioNegative = document.querySelector('#negative');
 const radioPositive = document.querySelector('#positive');
 const viewAllTransactionsBtn = document.querySelector('.view-all-transactions');
-const editCategoriesBtn = document.querySelector('.edit-categories');
+const editCategoriesBtns = document.querySelectorAll('.edit-categories');
 const closeBtnBudgetMoney = document.querySelector('.close-btn-budget-money');
 const logOutBtn = document.querySelector('.log-out');
 const spendingDataBtn = document.querySelector('.spending-data');
 const budgetTableBtn = document.querySelector('.budget-table');
+const resetBudgetBtns = document.querySelectorAll('.resetBudget-btn');
 
 
 

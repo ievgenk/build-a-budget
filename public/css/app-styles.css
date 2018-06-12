@@ -138,9 +138,15 @@ nav {
 
 #categories-header {
   display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin: 0;
   border-bottom: none;
+}
+
+#categories-header a {
+  flex: 1
 }
 
 #categories-header h2,
@@ -163,17 +169,26 @@ i {
 }
 
 #views-nav a {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 #views-nav .ui {
   margin: 0;
 }
 
+#categories-header-mobile {
+  display: none;
+}
+
+#categories-header-medium {
+  display: none;
+}
+
 /* TABLE */
 
 #main-table {
   margin: 0;
+  font-size: 1.3rem;
 }
 
 .expense-category {
@@ -331,4 +346,108 @@ textarea {
 select,
 option {
   padding: 8px;
+}
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 1450px) and (min-width: 769px) {
+  #main-table {
+    font-size: 1.2rem;
+  }
+  #categories-header-medium {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .div-budgeted {
+    font-size: 2.2rem;
+    width: 20%;
+  }
+  .month h2 {
+    font-size: 1.7rem;
+  }
+  .fa-arrow-left,
+  .fa-arrow-right {
+    font-size: 1.5rem;
+  }
+  #categories-header-medium a {
+    flex: 1;
+  }
+  #categories-header-mobile {
+    display: none;
+  }
+  #categories-header {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) and (min-width:350px) {
+  #views-nav a {
+    font-size: 1.1rem
+  }
+  #main-table {
+    font-size: 1.1rem;
+  }
+  .div-budgeted {
+    font-size: 1.5rem;
+    width: 25%;
+  }
+  .month h2 {
+    font-size: 1.5rem;
+  }
+  .fa-arrow-left,
+  .fa-arrow-right {
+    font-size: 1.3rem;
+  }
+  #categories-header-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #categories-header {
+    display: none;
+  }
+  .log-out {
+    font-size: 1.2rem;
+  }
+  .main-btn {
+    padding: 7px;
+  }
+}
+
+@media screen and (max-width:350px) {
+  #views-nav a {
+    font-size: 1.2rem
+  }
+  #main-table {
+    font-size: 1.1rem;
+  }
+  .log-out {
+    font-size: 1.2rem;
+  }
+  .main-btn {
+    padding: 7px;
+  }
+  .div-budgeted {
+    font-size: 1.2rem;
+    width: 25%;
+  }
+  .month h2 {
+    font-size: 1.2rem;
+  }
+  .fa-arrow-left,
+  .fa-arrow-right {
+    font-size: 1.2rem;
+  }
+  #categories-header-mobile a {
+    font-size: 0.9rem;
+  }
+  #categories-header-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #categories-header {
+    display: none;
+  }
 }

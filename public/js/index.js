@@ -524,6 +524,110 @@ function addListenersDeleteTransaction() {
   })
 }
 
+//ADDING EVENT LISTENER TO EDIT CATEGORIES BTNS
+
+function addEventListenerToEditSubCatBtns() {
+  for (let subCatEditBtn of editCategoriesBtns) {
+    subCatEditBtn.on('click', function (event) {
+      const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
+      const deleteCategoryBtns = document.querySelectorAll('.fa-minus-square');
+      const tableRemoveIcons = document.querySelectorAll('.remove-icon');
+      const subCategoryTableRemoveIcons = document.querySelectorAll('.remove-icon-subcategory');
+
+
+      for (let i = 0; i < deleteCategoryBtns.length; i++) {
+        deleteCategoryBtns[i].classList.toggle('hidden');
+      }
+      for (let i = 0; i < addSubCategoryBtns.length; i++) {
+        addSubCategoryBtns[i].classList.toggle('hidden');
+      }
+
+      for (let icon of tableRemoveIcons) {
+        icon.on('click', function (event) {
+          STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
+          deleteCategory()
+            .then(refreshState)
+        })
+
+      }
+
+      for (let subCatIcon of subCategoryTableRemoveIcons) {
+        subCatIcon.on('click', function (event) {
+          STORE.SubCategoryToDelete = event.currentTarget.parentNode.getAttribute("data-subcategory");
+          STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.parentNode.getAttribute("data-valueSubCategory")).toFixed(2);
+          deleteSubCategory()
+            .then(refreshState)
+        })
+      }
+
+    })
+  }
+}
+
+
+// ADDING EVENT LISTENER TO MONEY BUDGET BTNS
+
+function addEventListenerMoneyBudgeted() {
+  for (let moneyBudgetBtn of moneyBudgetedBtns) {
+    moneyBudgetBtn.on('click', function (event) {
+      moneyBudgetFormDiv.classList.toggle('hidden');
+    })
+  }
+}
+
+//ADDING EVENT LISTENER TO ADDING MONEY TO BUDGET
+
+function addEventListenerToAddMoneyBtns() {
+  for (let moneyBudgetBtns of addMoneyBtns) {
+    moneyBudgetBtns.on('click', function (event) {
+      addMoneyDiv.classList.toggle('hidden');
+    })
+  }
+}
+
+
+//ADDING EVENT LISTENER TO TRANSACTION BTNS
+
+function addEventListenerTransactionBtns() {
+  for (let transBtn of addIncomeBtns) {
+    transBtn.on('click', function (event) {
+      renderSubCategories()
+      addTransactionFormDiv.classList.toggle('hidden')
+    })
+  }
+}
+
+// ADDING EVENT LISTENERS TO RESET BUDGET VALUE BTNS
+
+function addEventListenerOnResetValueBtns() {
+  for (let resetValueBtn of resetBudgetBtns) {
+    resetValueBtn.on('click', function (event) {
+      return axios({
+          url: `${serverURL}/api/monthlyBudget/${STORE.selectedMonth}`,
+          method: 'put',
+          headers: {
+            'authorization': localStorage.getItem('token')
+          },
+          data: {
+            budget: 0
+          }
+        })
+        .then(refreshState)
+    })
+
+  }
+}
+
+//ADD CATEGORY BTN
+function addEventListenersOnCategoryBtns() {
+  for (let catBtn of addCategoryBtns) {
+    catBtn.on('click', function (event) {
+      console.log('Category')
+      categoryFormDiv.classList.toggle('hidden');
+    })
+  }
+}
+
 
 // REFRESH STATE
 
@@ -557,11 +661,8 @@ logOutBtn.on('click', function (event) {
   localStorage.clear()
 })
 
-//Money Budget Div
 
-moneyBudgetedDiv.on('click', function (event) {
-  moneyBudgetFormDiv.classList.toggle('hidden');
-})
+
 
 // MONEY BUDGET DIV CLOSE BTN
 
@@ -584,16 +685,7 @@ addSubcategoryForm.on('submit', function (event) {
     .then(refreshState)
 })
 
-// RADIO BTNS
 
-
-
-//ADD INCOME BTN
-
-addIncomeBtn.on('click', function (event) {
-  renderSubCategories()
-  addTransactionFormDiv.classList.toggle('hidden')
-})
 
 // CLOSE FORM BTN
 
@@ -658,11 +750,9 @@ rightArrow.on('click', function (event) {;
 })
 
 
-//ADD CATEGORY BTN
 
-addCategoryBtn.on('click', function (event) {
-  categoryFormDiv.classList.toggle('hidden');
-})
+
+
 
 //CATEGORY FORM CATEGORY DROPDOWN
 
@@ -750,11 +840,8 @@ budgetTableBtn.on('click', function (event) {
   renderMainArea();
 })
 
-//ADD MONEY BTN
 
-addMoneyBtn.on('click', function (event) {
-  addMoneyDiv.classList.toggle('hidden');
-})
+
 
 //ADD MONEY FORM
 
@@ -791,43 +878,10 @@ addTransactionForm.on('submit', function (event) {
     .then(refreshState)
 })
 
-//EDIT CATEGORIES BTN
-
-editCategoriesBtn.on('click', function (event) {
-  const addSubCategoryBtns = document.querySelectorAll('.add-subCategory-btn');
-  const deleteCategoryBtns = document.querySelectorAll('.fa-minus-square');
-  const tableRemoveIcons = document.querySelectorAll('.remove-icon');
-  const subCategoryTableRemoveIcons = document.querySelectorAll('.remove-icon-subcategory');
-
-
-  for (let i = 0; i < deleteCategoryBtns.length; i++) {
-    deleteCategoryBtns[i].classList.toggle('hidden');
-  }
-  for (let i = 0; i < addSubCategoryBtns.length; i++) {
-    addSubCategoryBtns[i].classList.toggle('hidden');
-  }
-
-  for (let icon of tableRemoveIcons) {
-    icon.on('click', function (event) {
-      STORE.CategoryToDelete = event.currentTarget.parentNode.previousElementSibling.previousElementSibling.getAttribute("data-subcategory");
-      deleteCategory()
-        .then(refreshState)
-    })
-
-  }
-
-  for (let subCatIcon of subCategoryTableRemoveIcons) {
-    subCatIcon.on('click', function (event) {
-      STORE.SubCategoryToDelete = event.currentTarget.parentNode.getAttribute("data-subcategory");
-      STORE.SubCategoryToDeleteBudgeted = parseFloat(event.currentTarget.parentNode.getAttribute("data-valueSubCategory")).toFixed(2);
-      deleteSubCategory()
-        .then(refreshState)
-    })
-  }
 
 
 
-})
+
 
 // RENDER STATE
 
@@ -845,8 +899,14 @@ function renderState() {
 }
 
 window.on('load', function (event) {
+  addEventListenerOnResetValueBtns();
+  addEventListenerTransactionBtns();
+  addEventListenerToAddMoneyBtns();
+  addEventListenerMoneyBudgeted();
   addListenersOnSubcategoryButtons();
+  addEventListenerToEditSubCatBtns();
   addListenersDeleteTransaction();
+  addEventListenersOnCategoryBtns();
   setCurrentMonthToStore();
   refreshState();
 })

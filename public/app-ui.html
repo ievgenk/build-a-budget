@@ -85,7 +85,66 @@
         <i class="far fa-credit-card"></i>
         <span>Input Transaction</span>
       </a>
+      <a class="item resetBudget-btn">
+        <i class="fas fa-redo"></i>
+        <span>Reset Budget Value</span>
+      </a>
     </div>
+
+    <!-- MEDIUM SIZE SCREEN -->
+
+    <div class="ui labeled icon menu" id="categories-header-medium">
+      <a class="item add-category">
+        <i class="fas fa-keyboard"></i>
+        <span>Create New Category</span>
+      </a>
+      <a class="item edit-categories">
+        <i class="fas fa-edit"></i>
+        <span>Modify Sub / Categories</span>
+      </a>
+      <a class="item money-budgeted">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Distribute Money Across Categories</span>
+      </a>
+
+      <a class="item add-money-btn">
+        <i class="far fa-money-bill-alt"></i>
+        <span> Add Money To Budget</span>
+      </a>
+      <a class="item income-btn">
+        <i class="far fa-credit-card"></i>
+        <span>Input Transaction</span>
+      </a>
+      <a class="item resetBudget-btn">
+        <i class="fas fa-redo"></i>
+        <span>Reset Budget Value</span>
+      </a>
+    </div>
+
+    <!-- MOBILE CATEGORIES HEADER -->
+
+    <div class="ui icon menu" id="categories-header-mobile">
+      <a class="item add-category">
+        <i class="fas fa-keyboard"></i>
+      </a>
+      <a class="item edit-categories">
+        <i class="fas fa-edit"></i>
+      </a>
+      <a class="item money-budgeted">
+        <i class="fas fa-exchange-alt"></i>
+      </a>
+
+      <a class="item add-money-btn">
+        <i class="far fa-money-bill-alt"></i>
+      </a>
+      <a class="item income-btn">
+        <i class="far fa-credit-card"></i>
+      </a>
+      <a class="item resetBudget-btn">
+        <i class="fas fa-redo"></i>
+      </a>
+    </div>
+
   </div>
 
   <!-- MAIN SECTION -->
@@ -171,6 +230,8 @@
 
   <div class="forms add-subCategory-div hidden">
     <form class="ui form all-forms add-subCategory-form">
+      <h2>
+        <i class="fas fa-edit"></i> Add a Subcategory</h2>
       <span class="close-btn" id="add-subCategory-close-btn">
         <i class="fas fa-times-circle"></i>
       </span>
@@ -204,7 +265,7 @@
   <!-- VIEW ALL TRANSACTIONS WINDOW -->
 
   <div class="all-transactions-div hidden">
-    <table class="ui striped table transactions-table">
+    <table class="ui unstackable table striped-table transactions-table">
 
     </table>
   </div>
