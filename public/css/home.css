@@ -151,6 +151,10 @@ nav {
   padding-top: 20px;
 }
 
+.getStarted-section h3:nth-of-type(2) {
+  padding: 0 15% 0 15%;
+}
+
 /* THREE STEPS */
 
 .three-steps {
