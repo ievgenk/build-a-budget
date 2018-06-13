@@ -171,7 +171,20 @@ nav {
 
 .mdl-card__title {
   border-bottom: 1px lightgrey solid;
-  background: url('https://media.giphy.com/media/PFF62vzZb32jC/giphy.gif') no-repeat center;
+}
+
+.first-card {
+  background: url('../media/gifs/first.gif') no-repeat center;
+  background-size: cover;
+}
+
+.second-card {
+  background: url('../media/gifs/second.gif') no-repeat center;
+  background-size: cover;
+}
+
+.third-card {
+  background: url('../media/gifs/third.gif') no-repeat center;
   background-size: cover;
 }
 

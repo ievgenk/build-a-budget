@@ -1,5 +1,5 @@
-  const serverURL = 'https://build-a-budget.herokuapp.com'
-  // const serverURL = window.location.host.indexOf('127') > -1 ? `http://127.0.0.1:8080` : 'https://build-a-budget.herokuapp.com'
+  // const serverURL = 'https://build-a-budget.herokuapp.com'
+  const serverURL = window.location.host.indexOf('127') > -1 ? `http://127.0.0.1:8080` : 'https://build-a-budget.herokuapp.com'
 
   // TOATSTR
   toastr.options = {
@@ -874,6 +874,8 @@
           STORE.totalSpentPerCat = [];
           STORE.totalSpentPerCatTitles = [];
           STORE.categoriesTotalSpent = [];
+          dollarValueInput.value = '';
+          briefDescriptionInput.value = '';
           addTransactionFormDiv.classList.toggle('hidden')
           toastr.success('You have successfully added a new transaction.')
         }
