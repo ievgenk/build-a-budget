@@ -4,16 +4,6 @@ h2:first-child {
   margin-top: auto;
 }
 
-/* SVG BUTTON OVERRIDE */
-
-span.remove-transaction svg {
-  pointer-events: none !important;
-}
-
-span.close-btn svg {
-  pointer-events: all !important;
-}
-
 /* MAIN STYLES */
 
 html,
@@ -77,6 +67,11 @@ body>* {
 .activated-tab {
   background-color: #5FCC9C !important;
   color: #163A5F !important;
+}
+
+.close-btn,
+.close-btn-budget-money {
+  cursor: pointer;
 }
 
 /* NAV TOP */
@@ -199,7 +194,8 @@ i {
 .fa-minus-square {
   color: red;
   grid-column: 12/13;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .remove-icon {
@@ -234,8 +230,9 @@ i {
 
 .fa-plus-square {
   color: #5FCC9C;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin-left: 5px;
+  cursor: pointer;
 }
 
 .th-delete {
@@ -247,6 +244,10 @@ i {
   font-size: 1.5rem;
   height: 1.5rem;
   width: 1.5rem;
+}
+
+.all-transactions-div .transactions-table {
+  font-size: 1.3rem;
 }
 
 /* TRANSACTIONS */
