@@ -1,5 +1,5 @@
- const serverURL = window.location.host.indexOf('127') > -1 ? `http://127.0.0.1:${process.env.PORT}` : 'https://build-a-budget.herokuapp.com'
-
+ const serverURL = 'https://build-a-budget.herokuapp.com'
+ //  window.location.host.indexOf('127') > -1 ? `http://127.0.0.1:${process.env.PORT}` :
 
  // TOATSTR
  toastr.options = {
