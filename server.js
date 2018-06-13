@@ -22,7 +22,7 @@ const transactionsRoute = require('./routes/transactions-route');
 const monthlyBudgetRoute = require('./routes/monthlyBudget-route');
 
 // DataBase Connection
-mongoose.connect('mongodb://evgenyK:Ben08082016@ds257470.mlab.com:57470/build-a-budget')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to DB sucesfully');
   })
