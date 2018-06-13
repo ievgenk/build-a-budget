@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-
+const {
+  PORT,
+  JWT_SECRET,
+  MONGODB_URI
+} = require('../config');
 
 router.use(express.json());
 
@@ -85,7 +89,7 @@ router.post('/login', (req, res) => {
               email: user.email,
               userId: user._id
             },
-            process.env.JWT_SECRET, {
+            JWT_SECRET, {
               expiresIn: "1h"
             }
           )

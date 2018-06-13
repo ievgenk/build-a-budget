@@ -13,6 +13,11 @@ const {
   Month
 } = require('./models/budget');
 const autopopulate = require('mongoose-autopopulate');
+const {
+  PORT,
+  JWT_SECRET,
+  MONGODB_URI
+} = require('./config');
 
 //ROUTES
 const userRoute = require('./routes/user-route');
@@ -22,7 +27,7 @@ const transactionsRoute = require('./routes/transactions-route');
 const monthlyBudgetRoute = require('./routes/monthlyBudget-route');
 
 // DataBase Connection
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('Connected to DB sucesfully');
   })
@@ -52,8 +57,8 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json(err).end();
 })
 
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on port ${process.env.PORT}`)
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`)
 })
 
 
