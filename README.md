@@ -2,7 +2,13 @@
 
 # Build A Budget
 
-## Build A Budget is a simple budgeting application that will help you to keep track of your personal finances.
+## Live Link
+
+http://build-a-budget.herokuapp.com
+
+## Summary
+
+Build A Budget is a simple budgeting application that will help you to keep track of your personal finances.
 
 Here is an example of a workflow for Build A Budget. You will add money to the budget first that you would like to keep track of. Next you would create catgories (e.g Bills) and within them sub-categories (e.g Internet) and then allocate some money towards Internet subcategory. Finally once the payment is due, enter the transaction to keep track of how much money you have left budgeted for that subcategory
 
@@ -21,9 +27,7 @@ Here is an example of a workflow for Build A Budget. You will add money to the b
 
 ![Walkthrough gif](./public/media/gifs/third.gif)
 
-## Live Link
 
-http://build-a-budget.herokuapp.com
 
 **Test Credentials**
 
