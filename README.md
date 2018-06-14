@@ -29,7 +29,7 @@ Here is an example of a workflow for Build A Budget. You will add money to the b
 
 
 
-**Test Credentials**
+**DEMO User Credentials**
 
 * **email:** testuser@test.com
 * **password:** test
