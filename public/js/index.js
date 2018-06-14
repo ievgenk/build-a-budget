@@ -490,7 +490,6 @@
 
       if (event.target.classList.contains('add-subCategory-btn')) {
         event.preventDefault();
-        console.log('clicked on add subctr')
         STORE.CategoryToAdd = event.target.parentNode.getAttribute("data-subcategory");
         addSubcategoryDiv.classList.toggle('hidden');
       }
@@ -504,7 +503,6 @@
   function addListenersDeleteTransaction() {
     document.body.addEventListener('click', function (event) {
       if (event.target.classList.contains('remove-transaction')) {
-        console.log('delete trans')
         STORE.transactionToBeDeleted.id = event.target.parentNode.getAttribute("data-transactionId")
         let subCategoryTitle = event.target.parentNode.getAttribute("data-transactionSubCategory")
         STORE.transactionToBeDeleted.value = event.target.parentNode.getAttribute("data-transaction-value")
@@ -518,7 +516,6 @@
         } else {
           STORE.transactionToBeDeleted.subCategory = subCat._id
         }
-        console.log('Delete Transaction')
         deleteTransaction()
           .then(toastr.success('Transaction was deleted successfully'))
           .then(refreshState)
@@ -626,7 +623,6 @@
   function addEventListenersOnCategoryBtns() {
     for (let catBtn of addCategoryBtns) {
       catBtn.on('click', function (event) {
-        console.log('Category')
         categoryFormDiv.classList.toggle('hidden');
       })
     }
@@ -808,7 +804,6 @@
 
     distributeBudgetedMoney()
       .then(result => {
-        console.log(result)
         if (result.status === 204) {
           moneyBudgetFormDiv.classList.toggle('hidden')
           toastr.success('You succesfully re-destributed money.')

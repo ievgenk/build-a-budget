@@ -53,7 +53,6 @@ window.on('load', function (event) {
     event.preventDefault();
     signupUser()
       .then(newUser => {
-        console.log(newUser)
         if (newUser.status === 201) {
           toastr.success('You have successfully signed-up.')
         }
