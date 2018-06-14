@@ -39,3 +39,5 @@ http://build-a-budget.herokuapp.com
 * Node
 * MongoDB
 * Mongoose
+* Mocha / Chai
+* TravisCI
